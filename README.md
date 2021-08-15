@@ -30,10 +30,11 @@ Should show this
 
 ![images/remote_open.png](images/remote_open.png)
 
-Changes to these mapped parameters will be reflected on Electra One (and vice versa :smiley:)
-If you change Remote Controls Page the labels & values will change.
-If you select another device on the same track the labels & values will change.
-If you select another track the labels & values will change.
-It follows your focus so to say. Works out nice.
+Changes to these mapped parameters will be reflected on Electra One (and vice versa 😃)
+
+- If you change Remote Controls Page the labels & values will change.
+- If you select another device on the same track the labels & values will change.
+- If you select another track the labels & values will change.
+- It follows your focus so to say. Works out nice.
 
 ![images/electra_one.jpg](images/electra_one.jpg)
