@@ -1,69 +1,73 @@
 loadAPI(7);
 
 host.setShouldFailOnDeprecatedUse(true);
-host.defineController("Bonboa", "Electra One Control", "1.01", "7f4b4851-911b-4dbf-a6a7-ee7801296ce1", "Joris Röling");
+host.defineController("Bonboa", "Electra One Control", "1.02", "7f4b4851-911b-4dbf-a6a7-ee7801296ce1", "Joris Röling");
 
 host.defineMidiPorts(2, 2);
 
 if (host.platformIsWindows()) {
-  host.addDeviceNameBasedDiscoveryPair(["Electra Controller Electra Port 1","Electra Controller Electra CTRL"], ["Electra Controller Electra Port 1","Electra Controller Electra CTRL"]);
+  host.addDeviceNameBasedDiscoveryPair(["Electra Controller Electra Port 1", "Electra Controller Electra CTRL"], ["Electra Controller Electra Port 1", "Electra Controller Electra CTRL"]);
 } else if (host.platformIsMac()) {
-  host.addDeviceNameBasedDiscoveryPair(["Electra Controller Electra Port 1","Electra Controller Electra CTRL"], ["Electra Controller Electra Port 1","Electra Controller Electra CTRL"]);
+  host.addDeviceNameBasedDiscoveryPair(["Electra Controller Electra Port 1", "Electra Controller Electra CTRL"], ["Electra Controller Electra Port 1", "Electra Controller Electra CTRL"]);
 } else if (host.platformIsLinux()) {
-  host.addDeviceNameBasedDiscoveryPair(["Electra Controller Electra Port 1","Electra Controller Electra CTRL"], ["Electra Controller Electra Port 1","Electra Controller Electra CTRL"]);
+  host.addDeviceNameBasedDiscoveryPair(["Electra Controller Electra Port 1", "Electra Controller Electra CTRL"], ["Electra Controller Electra Port 1", "Electra Controller Electra CTRL"]);
 }
 
-var remoteControlsBank = null;
+let remoteControlsBank = null;
 
-var E1_CC_MSB = [3, 9, 14, 15, 16, 17, 18, 19];
+let E1_CC_MSB = [3, 9, 14, 15, 16, 17, 18, 19];
 
-var E1_CC_LSB = [];
+let E1_CC_LSB = [];
 
-for (var a = 0; a < E1_CC_MSB.length; a++)
-if (E1_CC_MSB[a] < 32) E1_CC_LSB.push(E1_CC_MSB[a] + 32)
+let E1_PREVIOUS_PAGE_CC = 80
+let E1_NEXT_PAGE_CC = 81
 
-var BOOLEAN_OPTIONS = [ "Off", "On" ];
-var LAYOUT_COLUMNS_MAP = [0, 4, 1, 5, 2, 6, 3, 7];
-var REVERSE_LAYOUT_COLUMNS_MAP = [0, 2, 4, 6, 1,3, 5, 7];
-
-var LAYOUT_OPTIONS = [ "Rows", "Columns" ];
-
-function doObject (object, f)
-{
-  return function () {
-        f.apply (object, arguments);
-    };
+for (let a = 0; a < E1_CC_MSB.length; a++) {
+  if (E1_CC_MSB[a] < 32) E1_CC_LSB.push(E1_CC_MSB[a] + 32)
 }
 
-var highRes = true;
-var layoutColumns = true;
+let LAYOUT_COLUMNS_MAP = [0, 4, 1, 5, 2, 6, 3, 7];
+let REVERSE_LAYOUT_COLUMNS_MAP = [0, 2, 4, 6, 1, 3, 5, 7];
 
-var translateWithMap = true;
+let controlIDs = [1, 2, 3, 4, 7, 8, 9, 10]
+
+function doObject(object, f) {
+  return function() {
+    f.apply(object, arguments)
+  }
+}
+
+let highRes = true;
+let layoutColumns = true;
 
 function init() {
-  var controls=[];
-  for (var c=0;c<128;c++) controls.push(i+'')
-  var preferences = host.getPreferences ();
+  let controls = [];
+  for (let c = 0; c < 128; c++) controls.push(c + '')
+  let preferences = host.getPreferences();
 
-  preferences.getEnumSetting ("Enable", "High Resolution", BOOLEAN_OPTIONS, BOOLEAN_OPTIONS[1]).addValueObserver (function (value) {
-    highRes = value == BOOLEAN_OPTIONS[1];
-  });
-  /* preferences.getEnumSetting ("Layout", "Button Order", LAYOUT_OPTIONS, LAYOUT_OPTIONS[layoutColumns?1:0]).addValueObserver (function (value) {
-    layoutColumns = (value == LAYOUT_OPTIONS[1]);
-  }); */
+  for (let c=0;c<8;c++) {
+    preferences.getNumberSetting(`Parameter #${c+1}`, 'Control IDs', 1, 432, 1, '', controlIDs[c]).addValueObserver(function(value) {
+      controlIDs[c] = value;
+    });
+  }
 
   host.getMidiInPort(0).setMidiCallback(handleMidi);
 
-  var cursorTrack = host.createCursorTrack("E1_CURSOR_TRACK", "Cursor Track", 0, 0, true);
+  let cursorTrack = host.createCursorTrack("E1_CURSOR_TRACK", "Cursor Track", 0, 0, true);
 
-  var cursorDevice = cursorTrack.createCursorDevice("E1_CURSOR_DEVICE", "Cursor Device", 0, CursorDeviceFollowMode.FOLLOW_SELECTION);
+  let cursorDevice = cursorTrack.createCursorDevice("E1_CURSOR_DEVICE", "Cursor Device", 0, CursorDeviceFollowMode.FOLLOW_SELECTION);
 
   remoteControlsBank = cursorDevice.createCursorRemoteControlsPage(8);
-  remoteControlsBank.selectedPageIndex().markInterested();
+  remoteControlsBank.pageNames().markInterested();
+  remoteControlsBank.selectedPageIndex().addValueObserver(function(value) {
+    if (value>=0 && !remoteControlsBank.pageNames().isEmpty()) {
+      const names=remoteControlsBank.pageNames()
+    }
+  });
 
   function padZero(str) {
-    if (!str) str=''
-    while (str.length<2) str='0'+str
+    if (!str) str = ''
+    while (str.length < 2) str = '0' + str
     return str
   }
 
@@ -72,12 +76,12 @@ function init() {
   }
 
   function str2hex(str) {
-	  var arr1 = [];
-	  for (var n = 0, l = str.length; n < l; n ++) {
-		  var hex = padZero(Number(str.charCodeAt(n)).toString(16).toUpperCase());
-		  arr1.push(hex);
-	  }
-	  return arr1.join(' ');
+    let arr1 = [];
+    for (let n = 0, l = str.length; n < l; n++) {
+      let hex = padZero(Number(str.charCodeAt(n)).toString(16).toUpperCase());
+      arr1.push(hex);
+    }
+    return arr1.join(' ');
   }
 
   function setupParameter(i) {
@@ -85,28 +89,27 @@ function init() {
     parameter.markInterested();
     parameter.setIndication(true);
 
-    parameter.value().addValueObserver (function (value) {
+    parameter.value().addValueObserver(function(value) {
       const idx = (layoutColumns ? REVERSE_LAYOUT_COLUMNS_MAP[i] : i);
 
       if (values[idx] != (value * 16383)) {
-        sendMidi(0xB0,E1_CC_MSB[idx],((value * 16383) >> 7) & 0x7F);
-        if (highRes) sendMidi(0xB0,E1_CC_LSB[idx],((value * 16383) >> 0) & 0x7F);
+        sendMidi(0xB0, E1_CC_MSB[idx], ((value * 16383) >> 7) & 0x7F);
+        if (highRes) sendMidi(0xB0, E1_CC_LSB[idx], ((value * 16383) >> 0) & 0x7F);
       }
     });
 
     parameter.name().addValueObserver(function(name) {
-
-      var json = {
+      const json = {
         "name": name,
-        "visible" : !!name.trim().length
+        "visible": !!name.trim().length
       }
-      var ctrlId = (i < 4) ? (14 + i) : (16 + i)
-      var data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`;
+      const ctrlId = controlIDs[i]
+      const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`;
       host.getMidiOutPort(1).sendSysex(data)
     })
   }
 
-  for (var i = 0; i < remoteControlsBank.getParameterCount(); i++) {
+  for (let i = 0; i < remoteControlsBank.getParameterCount(); i++) {
     setupParameter(i);
   }
 
@@ -120,23 +123,24 @@ const values = [];
 
 function handleMidi(status, data1, data2) {
   if (isChannelController(status)) {
-    var idx = E1_CC_MSB.indexOf(data1);
-    if (idx >= 0) {
+    if (E1_CC_MSB.indexOf(data1) >= 0) {
+      let idx = E1_CC_MSB.indexOf(data1);
       values[idx] = (values[idx] & (0x7F << 0)) | (data2 << 7);
-      remoteControlsBank.getParameter(layoutColumns ? LAYOUT_COLUMNS_MAP[idx] : idx).set(values[idx], 16384);
-    } else if (highRes) {
+      if (!highRes) remoteControlsBank.getParameter(layoutColumns ? LAYOUT_COLUMNS_MAP[idx] : idx).set(values[idx], 16384);
+    } else if (highRes && E1_CC_LSB.indexOf(data1) >= 0) {
       idx = E1_CC_LSB.indexOf(data1);
-      if (idx >= 0) {
-        values[idx] = (values[idx] & (0x7F << 7)) | (data2 << 0);
-        remoteControlsBank.getParameter(layoutColumns ? LAYOUT_COLUMNS_MAP[idx] : idx).set(values[idx], 16384);
-      }
+      values[idx] = (values[idx] & (0x7F << 7)) | (data2 << 0);
+      remoteControlsBank.getParameter(layoutColumns ? LAYOUT_COLUMNS_MAP[idx] : idx).set(values[idx], 16384);
+    } else if (data1 == E1_PREVIOUS_PAGE_CC && data2) {
+      remoteControlsBank.selectPreviousPage(true)
+    } else if (data1 == E1_NEXT_PAGE_CC && data2) {
+      remoteControlsBank.selectNextPage(true)
     }
   }
   return false;
 }
 
-function flush() {
-}
+function flush() {}
 
 function exit() {
   println("Electra One Control exited!");
