@@ -8,6 +8,8 @@ This **Control Script** for *Bitwig* allows **Remote Control Pages** to be contr
 
 ## History
 
+### v1.04
+Quick Access to Pages (the number of which can be set in the settings)
 ### v1.03
 Added protection agains using the **Control Script** together with any preset other than "**Bitwig Control**". Without the protection, this **Control Script** would set arbitrary labels in the other preset. This mechanism depends on this naming now, so make sure you call your custom preset as sprecified in the settings (defaults to "**Bitwig Control**").
 ### v1.00
