@@ -20,7 +20,7 @@ const layoutColumns = true;
 
 let remoteControlsBank = null;
 
-const E1_PRESET_NAME = "Bitwig Control"
+let E1_PRESET_NAME = "Bitwig Control"
 let E1_CC_MSB = [3, 9, 14, 15, 16, 17, 18, 19];
 let E1_CC_LSB = [];
 
@@ -70,6 +70,10 @@ function init() {
   let controls = [];
   for (let c = 0; c < 128; c++) controls.push(c + '')
   let preferences = host.getPreferences();
+
+  preferences.getStringSetting(`Name`, 'Preset', 20, E1_PRESET_NAME).addValueObserver(function(value) {
+    E1_PRESET_NAME = value;
+  });
 
   for (let c=0;c<8;c++) {
     preferences.getNumberSetting(`Parameter #${c+1}`, 'Control IDs', 1, 432, 1, '', controlIDs[c]).addValueObserver(function(value) {
