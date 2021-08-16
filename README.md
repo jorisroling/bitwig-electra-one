@@ -4,7 +4,7 @@ This **Control Script** for *Bitwig* allows **Remote Control Pages** to be contr
 
 - Operates as any *Bitwig* **Remote Control Script**, it follows the current device (any), and maps 8 controls (per page), so that *Electra One* reflects the current parameter values, and allow to control them seamlessly bi-directional (without value jumps)
 - It reflects the current parameter names (assignments) as control labels on *Electra One*.
-- It uses high-res (14-bit) MIDI so that even meticulous parameters changes will transmitted and received. This thanks to *Electra One*'s a very balanced tuning of controll handling. Due to this one can do (i.e. with a 'Feedback' parameter on a 0.0 % to 100.0 % scale) little steps like 63.1%, 63.2%, 63.3%, 63.4%. While on a standard low-res (7-bit) MIDI setup this would result in value jumps like 62.5%, 63.3%, 64.1%, 64.8% (very sad I think 😐).
+- It uses high-res (14-bit) MIDI so that even meticulous parameters changes will transmitted and received. This thanks to *Electra One*'s a very balanced tuning of control handling. Due to this one can do (i.e. with a 'Feedback' parameter on a 0.0 % to 100.0 % scale) little steps like 63.1%, 63.2%, 63.3%, 63.4%. While on a standard low-res (7-bit) MIDI setup this would result in value jumps like 62.5%, 63.3%, 64.1%, 64.8% (very sad I think 😐).
 
 ## Installation
 
@@ -32,10 +32,10 @@ Should show this
 
 Changes to these mapped parameters will be reflected on *Electra One* (and vice versa 😃)
 
-If you change **Remote Controls Page** the labels & values will change.
-If you select another device on the same track the labels & values will change.
-If you select another track the labels & values will change.
-It follows your focus so to say. Works out nice.
+- If you change **Remote Controls Page** the labels & values will change.
+- If you select another device on the same track the labels & values will change.
+- If you select another track the labels & values will change.
+- It follows your focus so to say. Works out nice.
 
 ![images/electra_one.jpg](https://github.com/jorisroling/bitwig-electra-one/raw/main/images/electra_one.jpg)
 
