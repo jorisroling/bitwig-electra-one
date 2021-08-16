@@ -1,7 +1,7 @@
 loadAPI(7);
 
 host.setShouldFailOnDeprecatedUse(true);
-host.defineController("Bonboa", "Electra One Control", "1.03", "7f4b4851-911b-4dbf-a6a7-ee7801296ce1", "Joris Röling");
+host.defineController("Bonboa", "Electra One Control", "1.04", "7f4b4851-911b-4dbf-a6a7-ee7801296ce1", "Joris Röling");
 
 host.defineMidiPorts(2, 2);
 
@@ -24,8 +24,13 @@ let E1_PRESET_NAME = "Bitwig Control"
 let E1_CC_MSB = [3, 9, 14, 15, 16, 17, 18, 19];
 let E1_CC_LSB = [];
 
+const E1_PAGE_CTRL_ID = 13
+const E1_PAGE_CC = 100
+let E1_PAGE_COUNT = 6
+
 const E1_PREVIOUS_PAGE_CC = 80
 const E1_NEXT_PAGE_CC = 81
+const E1_PAGE_NAME_CTRL_ID = 1
 
 for (let a = 0; a < E1_CC_MSB.length; a++) {
   if (E1_CC_MSB[a] < 32) E1_CC_LSB.push(E1_CC_MSB[a] + 32)
@@ -34,7 +39,7 @@ for (let a = 0; a < E1_CC_MSB.length; a++) {
 const LAYOUT_COLUMNS_MAP = [0, 4, 1, 5, 2, 6, 3, 7];
 const REVERSE_LAYOUT_COLUMNS_MAP = [0, 2, 4, 6, 1, 3, 5, 7];
 
-let controlIDs = [1, 2, 3, 4, 7, 8, 9, 10]
+let controlIDs = [2, 3, 4, 5, 8, 9, 10, 11]
 
 const values = [];
 const names = [];
@@ -64,6 +69,31 @@ function str2hex(str) {
   return arr1.join(' ');
 }
 
+function showPages(value) {
+  const names=remoteControlsBank.pageNames().get()
+
+  for (let i = 0; i < E1_PAGE_COUNT; i++) {
+    sendMidi(0xB0, E1_PAGE_CC + i, (i==value) ? 127 : 0);
+    const name = (names && i < names.length) ? names[i] : ''
+    const json = {
+      "name": name,
+      "visible": !!(name && name.trim().length)
+    }
+    const ctrlId = E1_PAGE_CTRL_ID + i
+    const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`;
+    host.getMidiOutPort(1).sendSysex(data)
+  }
+  if (value>=0) {
+    const name = (names && value < names.length) ? names[value] : ''
+    const json = {
+      "name": name,
+      "visible": !!(name && name.trim().length)
+    }
+    const ctrlId = E1_PAGE_NAME_CTRL_ID
+    const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`;
+    host.getMidiOutPort(1).sendSysex(data)
+  }
+}
 
 
 function init() {
@@ -71,12 +101,16 @@ function init() {
   for (let c = 0; c < 128; c++) controls.push(c + '')
   let preferences = host.getPreferences();
 
+  preferences.getNumberSetting(`Quick Access`, 'Pages', 0, 24, 1, 'pages', E1_PAGE_COUNT).addValueObserver(function(value) {
+    E1_PAGE_COUNT = value;
+  });
+
   preferences.getStringSetting(`Name`, 'Preset', 20, E1_PRESET_NAME).addValueObserver(function(value) {
     E1_PRESET_NAME = value;
   });
 
   for (let c=0;c<8;c++) {
-    preferences.getNumberSetting(`Parameter #${c+1}`, 'Control IDs', 1, 432, 1, '', controlIDs[c]).addValueObserver(function(value) {
+    preferences.getNumberSetting(`Parameter #${c+1}`, 'Control IDs', 1, 432, 1, 'control', controlIDs[c]).addValueObserver(function(value) {
       controlIDs[c] = value;
     });
   }
@@ -90,10 +124,19 @@ function init() {
   let cursorDevice = cursorTrack.createCursorDevice("E1_CURSOR_DEVICE", "Cursor Device", 0, CursorDeviceFollowMode.FOLLOW_SELECTION);
 
   remoteControlsBank = cursorDevice.createCursorRemoteControlsPage(8);
-  remoteControlsBank.pageNames().markInterested();
+
+  //remoteControlsBank.pageNames().markInterested();
+  remoteControlsBank.pageNames().addValueObserver(function(value) {
+    if (active) {
+      showPages( remoteControlsBank.selectedPageIndex().get() )
+    }
+  });
+
   remoteControlsBank.selectedPageIndex().addValueObserver(function(value) {
-    if (value>=0 && !remoteControlsBank.pageNames().isEmpty()) {
-      const names=remoteControlsBank.pageNames()
+    if (active) {
+      if (value>=0 && !remoteControlsBank.pageNames().isEmpty()) {
+        showPages(value)
+      }
     }
   });
 
@@ -156,6 +199,9 @@ function handleMidi(status, data1, data2) {
         remoteControlsBank.selectPreviousPage(true)
       } else if (data1 == E1_NEXT_PAGE_CC && data2) {
         remoteControlsBank.selectNextPage(true)
+      } else if (data1 >= E1_PAGE_CC || data1 < (E1_PAGE_CC+E1_PAGE_COUNT)) {
+//        showPages(data1 - E1_PAGE_CC)
+        remoteControlsBank.selectedPageIndex().set(data1 - E1_PAGE_CC)
       }
     }
   }
