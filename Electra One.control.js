@@ -93,8 +93,10 @@ function showPages(value) {
       const ctrlId = E1_PAGE_CTRL_ID + i
       const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`;
       host.getMidiOutPort(1).sendSysex(data)
-      cache[i].name = json.nam
+      cache[i].name = json.name
       cache[i].visible = json.visible
+/*    } else {*/
+/*      println(`cache hit ${i}`)*/
     }
   }
   if (value>=0) {
@@ -175,9 +177,10 @@ function init() {
       names[i] = name
       if (active) {
         const json = {
-          "name": name,
+          "name": name ? name : '',
           "visible": !!(name && name.trim().length)
         }
+        //println(`name [${json.name}] visible [${json.visible}]`)
         const ctrlId = controlIDs[i]
         const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`;
         host.getMidiOutPort(1).sendSysex(data)
