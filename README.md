@@ -8,6 +8,8 @@ This **Control Script** for *Bitwig* allows **Remote Control Pages** to be contr
 
 ## History
 
+### v1.05
+Fixes bug in fetching the number of Quick Access buttons from settings
 ### v1.04
 Quick Access to Pages (the number of which can be set in the settings)
 ### v1.03

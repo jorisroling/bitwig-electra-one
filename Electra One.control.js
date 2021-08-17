@@ -1,7 +1,7 @@
 loadAPI(7);
 
 host.setShouldFailOnDeprecatedUse(true);
-host.defineController("Bonboa", "Electra One Control", "1.04", "7f4b4851-911b-4dbf-a6a7-ee7801296ce1", "Joris Röling");
+host.defineController("Bonboa", "Electra One Control", "1.05", "7f4b4851-911b-4dbf-a6a7-ee7801296ce1", "Joris Röling");
 
 host.defineMidiPorts(2, 2);
 
@@ -26,6 +26,7 @@ let E1_CC_LSB = [];
 
 const E1_PAGE_CTRL_ID = 13
 const E1_PAGE_CC = 100
+const E1_MAX_PAGE_COUNT = 24
 let E1_PAGE_COUNT = 6
 
 const E1_PREVIOUS_PAGE_CC = 80
@@ -43,6 +44,11 @@ let controlIDs = [2, 3, 4, 5, 8, 9, 10, 11]
 
 const values = [];
 const names = [];
+
+const cache = [];
+for (let i=0;i<E1_MAX_PAGE_COUNT;i++) {
+  cache[i]={name:'',visible:false,state:-1}
+}
 
 function doObject(object, f) {
   return function() {
@@ -72,16 +78,24 @@ function str2hex(str) {
 function showPages(value) {
   const names=remoteControlsBank.pageNames().get()
 
-  for (let i = 0; i < E1_PAGE_COUNT; i++) {
-    sendMidi(0xB0, E1_PAGE_CC + i, (i==value) ? 127 : 0);
+  for (let i = 0; i < E1_MAX_PAGE_COUNT; i++) {
+    const state = i < E1_PAGE_COUNT ? ((i==value) ? 127 : 0) : 0
+    if (cache[i].state !== state ) {
+      sendMidi(0xB0, E1_PAGE_CC + i, state );
+      cache[i].state = state
+    }
     const name = (names && i < names.length) ? names[i] : ''
     const json = {
       "name": name,
-      "visible": !!(name && name.trim().length)
+      "visible": !!((i < E1_PAGE_COUNT) && name && name.trim().length)
     }
-    const ctrlId = E1_PAGE_CTRL_ID + i
-    const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`;
-    host.getMidiOutPort(1).sendSysex(data)
+    if (cache[i].name !== json.name || cache[i].visible !== json.visible) {
+      const ctrlId = E1_PAGE_CTRL_ID + i
+      const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`;
+      host.getMidiOutPort(1).sendSysex(data)
+      cache[i].name = json.nam
+      cache[i].visible = json.visible
+    }
   }
   if (value>=0) {
     const name = (names && value < names.length) ? names[value] : ''
@@ -101,16 +115,16 @@ function init() {
   for (let c = 0; c < 128; c++) controls.push(c + '')
   let preferences = host.getPreferences();
 
-  preferences.getNumberSetting(`Quick Access`, 'Pages', 0, 24, 1, 'pages', E1_PAGE_COUNT).addValueObserver(function(value) {
-    E1_PAGE_COUNT = value;
+  preferences.getNumberSetting(`Quick Access`, 'Remote Control Pages', 0, E1_MAX_PAGE_COUNT, 1, 'buttons', E1_PAGE_COUNT).addValueObserver(function(value) {
+    E1_PAGE_COUNT = Math.round(value * E1_MAX_PAGE_COUNT);
   });
 
-  preferences.getStringSetting(`Name`, 'Preset', 20, E1_PRESET_NAME).addValueObserver(function(value) {
+  preferences.getStringSetting(`Name`, 'Electra One Preset', 20, E1_PRESET_NAME).addValueObserver(function(value) {
     E1_PRESET_NAME = value;
   });
 
   for (let c=0;c<8;c++) {
-    preferences.getNumberSetting(`Parameter #${c+1}`, 'Control IDs', 1, 432, 1, 'control', controlIDs[c]).addValueObserver(function(value) {
+    preferences.getNumberSetting(`Remote Control Parameter #${c+1}`, 'Electra One Control IDs', 1, 432, 1, 'control', controlIDs[c]).addValueObserver(function(value) {
       controlIDs[c] = value;
     });
   }

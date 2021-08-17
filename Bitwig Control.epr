@@ -50,7 +50,7 @@
       "id": 1,
       "type": "pad",
       "mode": "momentary",
-      "visible": true,
+      "visible": false,
       "name": "",
       "color": "FFFFFF",
       "bounds": [
@@ -222,7 +222,7 @@
       "type": "pad",
       "mode": "momentary",
       "visible": true,
-      "name": "PREVIOUS PAGE",
+      "name": "PREVIOUS",
       "color": "FFFFFF",
       "bounds": [
         850,
@@ -393,7 +393,7 @@
       "type": "pad",
       "mode": "momentary",
       "visible": true,
-      "name": "NEXT PAGE",
+      "name": "NEXT",
       "color": "FFFFFF",
       "bounds": [
         850,
