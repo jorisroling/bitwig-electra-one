@@ -1,4 +1,4 @@
-# Electra One Control for Bitwig
+# Bitwig Control for Electra One
 
 This **Control Script** for *Bitwig* allows **Remote Control Pages** to be controlled by *Electra One*. It has the following features:
 
