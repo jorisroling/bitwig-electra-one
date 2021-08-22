@@ -8,6 +8,8 @@ This **Control Script** for *Bitwig* allows **Remote Control Pages** to be contr
 
 ## History
 
+### v1.06
+Some better settings handling. Default MIDI portnames for Windows added (thanks to *Kirkwood West*).
 ### v1.05
 Fixes bug in fetching the number of Quick Access buttons from settings
 ### v1.04
@@ -21,12 +23,19 @@ Initial release
 
 To use this setup, copy the **Electra One.control.js** file to **~/Documents/Bitwig Studio/Controller Scripts** (on Mac, please inform me of the Windows/Linux paths of you know). Make sure the **Bitwig Control** preset is loaded in your *Electra One*. Now add the Control Script in Bitwig by going to **Preferences** -> **Settings** -> **Controllers** -> **Add Controller**, and choose **Bonboa** -> **Electra One Control**. It should be setup correctly by default, but the ports should be like this:
 
-- Electra Controller Electra Port 1
-- Electra Controller Electra CTRL
-- Electra Controller Electra Port 1
-- Electra Controller Electra CTRL
+#### for Mac
+- (in) **Electra Controller Electra Port 1**
+- (in) **Electra Controller Electra CTRL**
+- (out) **Electra Controller Electra Port 1**
+- (out) **Electra Controller Electra CTRL**
 
-(This should be default on Mac, I don't know the port naming on Windows / Linux, if anyone knows, please give me a hint, and I will implement the correct naming)
+#### for Windows
+- (in) **Electra Controller**
+- (in) **MIDIIN3 (Electra Controller)**
+- (out) **Electra Controller**
+- (out) **MIDIOUT3 (Electra Controller)**
+
+(This should be default on Mac and Windows, I don't know the port naming on Linux, if anyone knows, please give me a hint, and I will implement the correct naming)
 
 The **Control ID's** are only of interest to those that want to change the layout of their **Bitwig Control** preset.
 

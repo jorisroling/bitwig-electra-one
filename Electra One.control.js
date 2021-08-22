@@ -1,12 +1,12 @@
 loadAPI(7);
 
 host.setShouldFailOnDeprecatedUse(true);
-host.defineController("Bonboa", "Electra One Control", "1.05", "7f4b4851-911b-4dbf-a6a7-ee7801296ce1", "Joris Röling");
+host.defineController("Bonboa", "Electra One Control", "1.06", "7f4b4851-911b-4dbf-a6a7-ee7801296ce1", "Joris Röling");
 
 host.defineMidiPorts(2, 2);
 
 if (host.platformIsWindows()) {
-  host.addDeviceNameBasedDiscoveryPair(["Electra Controller Electra Port 1", "Electra Controller Electra CTRL"], ["Electra Controller Electra Port 1", "Electra Controller Electra CTRL"]);
+  host.addDeviceNameBasedDiscoveryPair(["Electra Controller", "MIDIIN3 (Electra Controller)"], ["Electra Controller", "MIDIOUT3 (Electra Controller)"]);
 } else if (host.platformIsMac()) {
   host.addDeviceNameBasedDiscoveryPair(["Electra Controller Electra Port 1", "Electra Controller Electra CTRL"], ["Electra Controller Electra Port 1", "Electra Controller Electra CTRL"]);
 } else if (host.platformIsLinux()) {
@@ -27,7 +27,9 @@ let E1_CC_LSB = [];
 const E1_PAGE_CTRL_ID = 13
 const E1_PAGE_CC = 100
 const E1_MAX_PAGE_COUNT = 24
-let E1_PAGE_COUNT = 6
+const E1_PAGE_COUNT = 24
+let pageCount = E1_PAGE_COUNT
+let presetName = E1_PRESET_NAME
 
 const E1_PREVIOUS_PAGE_CC = 80
 const E1_NEXT_PAGE_CC = 81
@@ -44,6 +46,7 @@ let controlIDs = [2, 3, 4, 5, 8, 9, 10, 11]
 
 const values = [];
 const names = [];
+
 
 const cache = [];
 for (let i=0;i<E1_MAX_PAGE_COUNT;i++) {
@@ -79,7 +82,7 @@ function showPages(value) {
   const names=remoteControlsBank.pageNames().get()
 
   for (let i = 0; i < E1_MAX_PAGE_COUNT; i++) {
-    const state = i < E1_PAGE_COUNT ? ((i==value) ? 127 : 0) : 0
+    const state = i < pageCount ? ((i==value) ? 127 : 0) : 0
     if (cache[i].state !== state ) {
       sendMidi(0xB0, E1_PAGE_CC + i, state );
       cache[i].state = state
@@ -87,7 +90,7 @@ function showPages(value) {
     const name = (names && i < names.length) ? names[i] : ''
     const json = {
       "name": name,
-      "visible": !!((i < E1_PAGE_COUNT) && name && name.trim().length)
+      "visible": !!((i < pageCount) && name && name.trim().length)
     }
     if (cache[i].name !== json.name || cache[i].visible !== json.visible) {
       const ctrlId = E1_PAGE_CTRL_ID + i
@@ -118,11 +121,20 @@ function init() {
   let preferences = host.getPreferences();
 
   preferences.getNumberSetting(`Quick Access`, 'Remote Control Pages', 0, E1_MAX_PAGE_COUNT, 1, 'buttons', E1_PAGE_COUNT).addValueObserver(function(value) {
-    E1_PAGE_COUNT = Math.round(value * E1_MAX_PAGE_COUNT);
+    pageCount = Math.round(value * E1_MAX_PAGE_COUNT);
+
+    if (active) {
+      showPages( remoteControlsBank.selectedPageIndex().get() )
+    }
   });
 
-  preferences.getStringSetting(`Name`, 'Electra One Preset', 20, E1_PRESET_NAME).addValueObserver(function(value) {
-    E1_PRESET_NAME = value;
+  preferences.getStringSetting(`Preset Name`, 'Electra One Preset', 20, E1_PRESET_NAME).addValueObserver(function(value) {
+    presetName = value;
+
+    active = false
+    /* Patch Request */
+    host.getMidiOutPort(1).sendSysex(`F0 00 21 45 02 01 F7`)
+
   });
 
   for (let c=0;c<8;c++) {
@@ -177,10 +189,10 @@ function init() {
       names[i] = name
       if (active) {
         const json = {
-          "name": name ? name : '',
+          "name": name ? name : `Parameter #${i+1}`,
           "visible": !!(name && name.trim().length)
         }
-        //println(`name [${json.name}] visible [${json.visible}]`)
+//        println(`name [${json.name}] visible [${json.visible}] ${JSON.stringify(json)} ${str2hex(JSON.stringify(json))}`)
         const ctrlId = controlIDs[i]
         const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`;
         host.getMidiOutPort(1).sendSysex(data)
@@ -216,7 +228,7 @@ function handleMidi(status, data1, data2) {
         remoteControlsBank.selectPreviousPage(true)
       } else if (data1 == E1_NEXT_PAGE_CC && data2) {
         remoteControlsBank.selectNextPage(true)
-      } else if (data1 >= E1_PAGE_CC || data1 < (E1_PAGE_CC+E1_PAGE_COUNT)) {
+      } else if (data1 >= E1_PAGE_CC || data1 < (E1_PAGE_CC+pageCount)) {
 //        showPages(data1 - E1_PAGE_CC)
         remoteControlsBank.selectedPageIndex().set(data1 - E1_PAGE_CC)
       }
@@ -228,12 +240,13 @@ function handleMidi(status, data1, data2) {
 function handleSysExMidi(data) {
   if (data && data.substr(0,8)==='f0002145') {
     if (data.substr(0,12)==='f00021457e02') { //f00021457e02####f7 = Preset Switch
-      println('Preset Switch')
+//      println('Preset Switch')
+      active=false
       host.getMidiOutPort(1).sendSysex(`F0 00 21 45 02 01 F7`)  /* Patch Request */
     }
 
     if (data.substr(0,12)==='f00021450101') { //f00021450101####f7 = Patch Response
-      println('Patch Response')
+//      println('Patch Response')
 
       const headData = data.substr(12,64*2)
       let head=''
@@ -242,9 +255,9 @@ function handleSysExMidi(data) {
       }
 
       const match = head.match(/,"name"\s*:\s*"([^"]*)",/)
-      active = (match && match.length && match[1] === E1_PRESET_NAME)
-      println('match '+(match && match[1]))
-      println('active '+active)
+      active = (match && match.length && match[1].trim() === presetName.trim())
+//      println('match '+(match && match[1]))
+//      println('active '+active)
 
 
       if (active) {
@@ -264,6 +277,7 @@ function handleSysExMidi(data) {
           const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`;
           host.getMidiOutPort(1).sendSysex(data)
         }
+        showPages( remoteControlsBank.selectedPageIndex().get() )
       }
 
 
