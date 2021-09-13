@@ -1,14 +1,14 @@
 loadAPI(7);
 
 host.setShouldFailOnDeprecatedUse(true);
-host.defineController("Bonboa", "Electra One Control", "1.06", "7f4b4851-911b-4dbf-a6a7-ee7801296ce1", "Joris Röling");
+host.defineController("Bonboa", "Electra One Control", "1.07a", "7f4b4851-911b-4dbf-a6a7-ee7801296ce1", "Joris Röling");
 
 host.defineMidiPorts(2, 2);
 
 if (host.platformIsWindows()) {
   host.addDeviceNameBasedDiscoveryPair(["Electra Controller", "MIDIIN3 (Electra Controller)"], ["Electra Controller", "MIDIOUT3 (Electra Controller)"]);
 } else if (host.platformIsMac()) {
-  host.addDeviceNameBasedDiscoveryPair(["Electra Controller Electra Port 1", "Electra Controller Electra CTRL"], ["Electra Controller Electra Port 1", "Electra Controller Electra CTRL"]);
+  host.addDeviceNameBasedDiscoveryPair(["Electra Controller A Electra Port 1", "Electra Controller A Electra CTRL"], ["Electra Controller A Electra Port 1", "Electra Controller A Electra CTRL"]);
 } else if (host.platformIsLinux()) {
   host.addDeviceNameBasedDiscoveryPair(["Electra Controller Electra Port 1", "Electra Controller Electra CTRL"], ["Electra Controller Electra Port 1", "Electra Controller Electra CTRL"]);
 }
@@ -23,6 +23,10 @@ let remoteControlsBank = null;
 let E1_PRESET_NAME = "Bitwig Control"
 let E1_CC_MSB = [3, 9, 14, 15, 16, 17, 18, 19];
 let E1_CC_LSB = [];
+const E1_PLAY_CC = 64
+const E1_STOP_CC = 65
+
+let transport
 
 const E1_PAGE_CTRL_ID = 13
 const E1_PAGE_CC = 100
@@ -46,7 +50,6 @@ let controlIDs = [2, 3, 4, 5, 8, 9, 10, 11]
 
 const values = [];
 const names = [];
-
 
 const cache = [];
 for (let i=0;i<E1_MAX_PAGE_COUNT;i++) {
@@ -116,6 +119,12 @@ function showPages(value) {
 
 
 function init() {
+  transport = host.createTransport();
+
+  transport.isPlaying().addValueObserver( value => {
+    //println('TRSNP '+value)
+    sendMidi(0xB0, E1_PLAY_CC, value?1:0);
+  })
   let controls = [];
   for (let c = 0; c < 128; c++) controls.push(c + '')
   let preferences = host.getPreferences();
@@ -219,7 +228,9 @@ function handleMidi(status, data1, data2) {
       if (E1_CC_MSB.indexOf(data1) >= 0) {
         let idx = E1_CC_MSB.indexOf(data1);
         values[idx] = (values[idx] & (0x7F << 0)) | (data2 << 7);
-        if (!highRes) remoteControlsBank.getParameter(layoutColumns ? LAYOUT_COLUMNS_MAP[idx] : idx).set(values[idx], 16384);
+        if (!highRes) {
+          remoteControlsBank.getParameter(layoutColumns ? LAYOUT_COLUMNS_MAP[idx] : idx).set(values[idx], 16384);
+        }
       } else if (highRes && E1_CC_LSB.indexOf(data1) >= 0) {
         idx = E1_CC_LSB.indexOf(data1);
         values[idx] = (values[idx] & (0x7F << 7)) | (data2 << 0);
@@ -228,9 +239,17 @@ function handleMidi(status, data1, data2) {
         remoteControlsBank.selectPreviousPage(true)
       } else if (data1 == E1_NEXT_PAGE_CC && data2) {
         remoteControlsBank.selectNextPage(true)
-      } else if (data1 >= E1_PAGE_CC || data1 < (E1_PAGE_CC+pageCount)) {
-//        showPages(data1 - E1_PAGE_CC)
+      } else if (data1 >= E1_PAGE_CC && data1 < (E1_PAGE_CC+pageCount)) {
         remoteControlsBank.selectedPageIndex().set(data1 - E1_PAGE_CC)
+      } else if (data1 == E1_PLAY_CC) {
+        if (data2) {
+          transport.play()
+        } else {
+          transport.stop()
+        }
+      } else if (data1 == E1_STOP_CC && data2) {
+        transport.stop()
+        transport.rewind()
       }
     }
   }
