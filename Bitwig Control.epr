@@ -60,6 +60,18 @@
         996,
         16
       ]
+    },
+    {
+      "id": 37,
+      "pageId": 2,
+      "name": "Song",
+      "bounds": [
+        0,
+        16,
+        996,
+        16
+      ],
+      "color": "FFFFFF"
     }
   ],
   "devices": [
@@ -1327,14 +1339,14 @@
       ]
     },
     {
-      "id": 42,
+      "id": 38,
       "type": "pad",
       "mode": "momentary",
       "visible": true,
-      "name": "PREVIOUS",
-      "color": "03A598",
+      "name": "STOP",
+      "color": "FFFFFF",
       "bounds": [
-        850,
+        170,
         40,
         146,
         56
@@ -1343,42 +1355,7 @@
       "controlSetId": 1,
       "inputs": [
         {
-          "potId": 6,
-          "valueId": "value"
-        }
-      ],
-      "values": [
-        {
-          "message": {
-            "type": "cc7",
-            "deviceId": 1,
-            "parameterNumber": 12,
-            "onValue": 1,
-            "offValue": 0
-          },
-          "defaultValue": "off",
-          "id": "value"
-        }
-      ]
-    },
-    {
-      "id": 43,
-      "type": "pad",
-      "mode": "momentary",
-      "visible": true,
-      "name": "STOP",
-      "color": "FFFFFF",
-      "bounds": [
-        0,
-        128,
-        146,
-        56
-      ],
-      "pageId": 2,
-      "controlSetId": 1,
-      "inputs": [
-        {
-          "potId": 7,
+          "potId": 2,
           "valueId": "value"
         }
       ],
@@ -1397,15 +1374,15 @@
       ]
     },
     {
-      "id": 48,
+      "id": 39,
       "type": "pad",
-      "mode": "momentary",
+      "mode": "toggle",
       "visible": true,
-      "name": "PREVIOUS",
-      "color": "03A598",
+      "name": "RECORD",
+      "color": "F45C51",
       "bounds": [
-        850,
-        128,
+        340,
+        40,
         146,
         56
       ],
@@ -1413,7 +1390,7 @@
       "controlSetId": 1,
       "inputs": [
         {
-          "potId": 12,
+          "potId": 3,
           "valueId": "value"
         }
       ],
@@ -1422,7 +1399,7 @@
           "message": {
             "type": "cc7",
             "deviceId": 1,
-            "parameterNumber": 13,
+            "parameterNumber": 66,
             "onValue": 1,
             "offValue": 0
           },
@@ -1470,7 +1447,7 @@
       "type": "pad",
       "mode": "toggle",
       "visible": true,
-      "name": "RECORD",
+      "name": "ARM",
       "color": "F45C51",
       "bounds": [
         340,
@@ -1571,6 +1548,41 @@
       ]
     },
     {
+      "id": 54,
+      "type": "pad",
+      "mode": "momentary",
+      "visible": true,
+      "name": "PREVIOUS",
+      "color": "03A598",
+      "bounds": [
+        850,
+        216,
+        146,
+        56
+      ],
+      "pageId": 2,
+      "controlSetId": 2,
+      "inputs": [
+        {
+          "potId": 6,
+          "valueId": "value"
+        }
+      ],
+      "values": [
+        {
+          "message": {
+            "type": "cc7",
+            "deviceId": 1,
+            "parameterNumber": 12,
+            "onValue": 1,
+            "offValue": 0
+          },
+          "defaultValue": "off",
+          "id": "value"
+        }
+      ]
+    },
+    {
       "id": 55,
       "type": "fader",
       "visible": true,
@@ -1600,6 +1612,41 @@
             "min": 0,
             "max": 16383
           },
+          "id": "value"
+        }
+      ]
+    },
+    {
+      "id": 60,
+      "type": "pad",
+      "mode": "momentary",
+      "visible": true,
+      "name": "NEXT",
+      "color": "03A598",
+      "bounds": [
+        850,
+        304,
+        146,
+        56
+      ],
+      "pageId": 2,
+      "controlSetId": 2,
+      "inputs": [
+        {
+          "potId": 12,
+          "valueId": "value"
+        }
+      ],
+      "values": [
+        {
+          "message": {
+            "type": "cc7",
+            "deviceId": 1,
+            "parameterNumber": 13,
+            "onValue": 1,
+            "offValue": 0
+          },
+          "defaultValue": "off",
           "id": "value"
         }
       ]
