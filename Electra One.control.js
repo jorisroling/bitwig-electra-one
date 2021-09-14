@@ -1,7 +1,7 @@
 loadAPI(7);
 
 host.setShouldFailOnDeprecatedUse(true);
-host.defineController("Bonboa", "Electra One Control", "1.07a", "7f4b4851-911b-4dbf-a6a7-ee7801296ce1", "Joris Röling");
+host.defineController("Bonboa", "Electra One Control", "1.07b", "7f4b4851-911b-4dbf-a6a7-ee7801296ce1", "Joris Röling");
 
 host.defineMidiPorts(2, 2);
 
@@ -19,6 +19,7 @@ const layoutColumns = true;
 
 
 let remoteControlsBank = null;
+let cursorTrack = null
 
 let E1_PRESET_NAME = "Bitwig Control"
 let E1_CC_MSB = [3, 9, 14, 15, 16, 17, 18, 19];
@@ -28,12 +29,15 @@ const E1_STOP_CC = 65
 
 let transport
 
+const E1_MAX_LABEL_LENGTH = 14
 const E1_PAGE_CTRL_ID = 13
 const E1_PAGE_CC = 100
 const E1_MAX_PAGE_COUNT = 24
 const E1_PAGE_COUNT = 24
 let pageCount = E1_PAGE_COUNT
 let presetName = E1_PRESET_NAME
+const E1_MAX_SEND_COUNT = 12
+const E1_SEND_CC = 20
 
 const E1_PREVIOUS_PAGE_CC = 80
 const E1_NEXT_PAGE_CC = 81
@@ -46,15 +50,33 @@ for (let a = 0; a < E1_CC_MSB.length; a++) {
 const LAYOUT_COLUMNS_MAP = [0, 4, 1, 5, 2, 6, 3, 7];
 const REVERSE_LAYOUT_COLUMNS_MAP = [0, 2, 4, 6, 1, 3, 5, 7];
 
-let controlIDs = [2, 3, 4, 5, 8, 9, 10, 11]
+let remoteControlIDs = [2, 3, 4, 5, 8, 9, 10, 11]
 
-const values = [];
-const names = [];
+const remoteValues = [];
+const remoteNames = [];
 
-const cache = [];
-for (let i=0;i<E1_MAX_PAGE_COUNT;i++) {
-  cache[i]={name:'',visible:false,state:-1}
+const remoteCache = [];
+function clearRemoteCache() {
+  for (let i=0;i<E1_MAX_PAGE_COUNT;i++) {
+    remoteCache[i]={name:'',visible:false,state:-1}
+  }
 }
+clearRemoteCache()
+
+let sendControlIDs = [61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72]
+
+const sendValues = [];
+const sendCache = [];
+function clearSendCache() {
+  for (let i=0;i<E1_MAX_SEND_COUNT;i++) {
+    if (active) {
+      sendCache[i]={name:'',visible:true,state:-1}
+      showSend(i,'')
+    }
+    sendCache[i]={name:'',visible:false,state:-1}
+  }
+}
+clearSendCache()
 
 function doObject(object, f) {
   return function() {
@@ -81,35 +103,54 @@ function str2hex(str) {
   return arr1.join(' ');
 }
 
+function showSend(index,name) {
+  const json = {
+    name: name.substr(0,E1_MAX_LABEL_LENGTH),
+    visible: (name && name.trim().length) ? true : false
+  }
+//  println('showSend('+index+','+name+') json '+JSON.stringify(json))
+  if (index>=0 && index<=sendControlIDs.length && (sendCache[index].name !== json.name || sendCache[index].visible !== json.visible)) {
+    const ctrlId = sendControlIDs[index]
+    const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`;
+    host.getMidiOutPort(1).sendSysex(data)
+    sendCache[index].name = json.name
+    sendCache[index].visible = json.visible
+  }
+}
+
 function showPages(value) {
-  const names=remoteControlsBank.pageNames().get()
+//  println("showPages "+value+  ' pageCount '+pageCount)
+  const remoteNames=remoteControlsBank.pageNames().get()
 
   for (let i = 0; i < E1_MAX_PAGE_COUNT; i++) {
     const state = i < pageCount ? ((i==value) ? 127 : 0) : 0
-    if (cache[i].state !== state ) {
+//  println("state("+i+")  "+state)
+//  println("remoteCache("+i+")  "+remoteCache[i].state)
+    if (remoteCache[i].state !== state ) {
       sendMidi(0xB0, E1_PAGE_CC + i, state );
-      cache[i].state = state
+      remoteCache[i].state = state
     }
-    const name = (names && i < names.length) ? names[i] : ''
+    const name = (remoteNames && i < remoteNames.length) ? remoteNames[i] : ''
     const json = {
-      "name": name,
-      "visible": !!((i < pageCount) && name && name.trim().length)
+      name: name.substr(0,E1_MAX_LABEL_LENGTH),
+      visible: (!!((i < pageCount) && name && name.trim().length)) ? true : false
     }
-    if (cache[i].name !== json.name || cache[i].visible !== json.visible) {
+//  println("remoteCache("+i+")  name "+remoteCache[i].name+ "  visible "+remoteCache[i].visible+  "  json "+JSON.stringify(json))
+    if (remoteCache[i].name !== json.name || remoteCache[i].visible !== json.visible) {
       const ctrlId = E1_PAGE_CTRL_ID + i
       const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`;
       host.getMidiOutPort(1).sendSysex(data)
-      cache[i].name = json.name
-      cache[i].visible = json.visible
+      remoteCache[i].name = json.name
+      remoteCache[i].visible = json.visible
 /*    } else {*/
-/*      println(`cache hit ${i}`)*/
+/*      println(`remoteCache hit ${i}`)*/
     }
   }
   if (value>=0) {
-    const name = (names && value < names.length) ? names[value] : ''
+    const name = (remoteNames && value < remoteNames.length) ? remoteNames[value] : ''
     const json = {
-      "name": name,
-      "visible": !!(name && name.trim().length)
+      name: name.substr(0,E1_MAX_LABEL_LENGTH),
+      visible: (!!(name && name.trim().length)) ? true : false
     }
     const ctrlId = E1_PAGE_NAME_CTRL_ID
     const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`;
@@ -147,16 +188,39 @@ function init() {
   });
 
   for (let c=0;c<8;c++) {
-    preferences.getNumberSetting(`Remote Control Parameter #${c+1}`, 'Electra One Control IDs', 1, 432, 1, 'control', controlIDs[c]).addValueObserver(function(value) {
-      controlIDs[c] = value;
+    preferences.getNumberSetting(`Remote Control Parameter #${c+1}`, 'Electra One Control IDs', 1, 432, 1, 'control', remoteControlIDs[c]).addValueObserver(function(value) {
+      remoteControlIDs[c] = value;
     });
   }
 
   host.getMidiInPort(0).setMidiCallback(handleMidi);
+  host.getMidiInPort(0).setSysexCallback(handleSysExMidi);
   host.getMidiInPort(1).setSysexCallback(handleSysExMidi);
 
 
-  let cursorTrack = host.createCursorTrack("E1_CURSOR_TRACK", "Cursor Track", 0, 0, true);
+  cursorTrack = host.createCursorTrack("E1_CURSOR_TRACK", "Cursor Track", E1_MAX_SEND_COUNT, 0, true);
+
+  for (let s=0;s<E1_MAX_SEND_COUNT;s++) {
+  	cursorTrack.getSend(s).value().addValueObserver((value) => {
+  		//println('Send '+s+' value '+value)
+
+      if (active) {
+        if (sendValues[s] != (value * 16383)) {
+          //println('Send MIDI '+s+' value '+value)
+          sendMidi(0xB0, E1_SEND_CC + s, ((value * 16383) >> 7) & 0x7F);
+          if (highRes) sendMidi(0xB0, E1_SEND_CC + s + 32, ((value * 16383) >> 0) & 0x7F);
+        }
+      }
+      sendValues[s] = value
+  	})
+  	cursorTrack.getSend(s).name().addValueObserver((name) => {
+  		println('Send '+s+' name '+name)
+
+      showSend(s,name)
+  	})
+  }
+
+  //let sendBank = host.createEffectTrackBank(12,0)
 
   let cursorDevice = cursorTrack.createCursorDevice("E1_CURSOR_DEVICE", "Cursor Device", 0, CursorDeviceFollowMode.FOLLOW_SELECTION);
 
@@ -185,24 +249,24 @@ function init() {
     parameter.value().addValueObserver(function(value) {
       const idx = (layoutColumns ? REVERSE_LAYOUT_COLUMNS_MAP[i] : i);
       if (active) {
-        if (values[idx] != (value * 16383)) {
+        if (remoteValues[idx] != (value * 16383)) {
           sendMidi(0xB0, E1_CC_MSB[idx], ((value * 16383) >> 7) & 0x7F);
           if (highRes) sendMidi(0xB0, E1_CC_LSB[idx], ((value * 16383) >> 0) & 0x7F);
         }
       }
-      values[idx] = value
+      remoteValues[idx] = value
     });
 
     parameter.name().addValueObserver(function(name) {
       const idx = (layoutColumns ? REVERSE_LAYOUT_COLUMNS_MAP[i] : i);
-      names[i] = name
+      remoteNames[i] = name
       if (active) {
         const json = {
-          "name": name ? name : `Parameter #${i+1}`,
-          "visible": !!(name && name.trim().length)
+          name: name ? name.substr(0,E1_MAX_LABEL_LENGTH) : `Parameter #${i+1}`,
+          visible: (!!(name && name.trim().length)) ? true : false
         }
 //        println(`name [${json.name}] visible [${json.visible}] ${JSON.stringify(json)} ${str2hex(JSON.stringify(json))}`)
-        const ctrlId = controlIDs[i]
+        const ctrlId = remoteControlIDs[i]
         const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`;
         host.getMidiOutPort(1).sendSysex(data)
       }
@@ -227,14 +291,24 @@ function handleMidi(status, data1, data2) {
     if (isChannelController(status)) {
       if (E1_CC_MSB.indexOf(data1) >= 0) {
         let idx = E1_CC_MSB.indexOf(data1);
-        values[idx] = (values[idx] & (0x7F << 0)) | (data2 << 7);
+        remoteValues[idx] = (remoteValues[idx] & (0x7F << 0)) | (data2 << 7);
         if (!highRes) {
-          remoteControlsBank.getParameter(layoutColumns ? LAYOUT_COLUMNS_MAP[idx] : idx).set(values[idx], 16384);
+          remoteControlsBank.getParameter(layoutColumns ? LAYOUT_COLUMNS_MAP[idx] : idx).set(remoteValues[idx], 16384);
         }
       } else if (highRes && E1_CC_LSB.indexOf(data1) >= 0) {
         idx = E1_CC_LSB.indexOf(data1);
-        values[idx] = (values[idx] & (0x7F << 7)) | (data2 << 0);
-        remoteControlsBank.getParameter(layoutColumns ? LAYOUT_COLUMNS_MAP[idx] : idx).set(values[idx], 16384);
+        remoteValues[idx] = (remoteValues[idx] & (0x7F << 7)) | (data2 << 0);
+        remoteControlsBank.getParameter(layoutColumns ? LAYOUT_COLUMNS_MAP[idx] : idx).set(remoteValues[idx], 16384);
+      } else if (data1 >= E1_SEND_CC && data1 <= (E1_SEND_CC + E1_MAX_SEND_COUNT)) {
+        let idx = data1 - E1_SEND_CC
+        sendValues[idx] = (sendValues[idx] & (0x7F << 0)) | (data2 << 7);
+        if (!highRes) {
+          cursorTrack.getSend(idx).set(sendValues[idx], 16384);
+        }
+      } else if (highRes && data1 >= (E1_SEND_CC + 32) && data1 <= (E1_SEND_CC + E1_MAX_SEND_COUNT + 32) ) {
+        idx = data1 - (E1_SEND_CC + 32)
+        sendValues[idx] = (sendValues[idx] & (0x7F << 7)) | (data2 << 0);
+        cursorTrack.getSend(idx).set(sendValues[idx], 16384);
       } else if (data1 == E1_PREVIOUS_PAGE_CC && data2) {
         remoteControlsBank.selectPreviousPage(true)
       } else if (data1 == E1_NEXT_PAGE_CC && data2) {
@@ -257,14 +331,14 @@ function handleMidi(status, data1, data2) {
 }
 
 function handleSysExMidi(data) {
-  if (data && data.substr(0,8)==='f0002145') {
-    if (data.substr(0,12)==='f00021457e02') { //f00021457e02####f7 = Preset Switch
+  if (data && data.substr(0,8)==='f0002145') {  // Electra One
+    if (data.substr(8,4)==='7e02') { //f00021457e02####f7 = Preset Switch
 //      println('Preset Switch')
       active=false
       host.getMidiOutPort(1).sendSysex(`F0 00 21 45 02 01 F7`)  /* Patch Request */
     }
 
-    if (data.substr(0,12)==='f00021450101') { //f00021450101####f7 = Patch Response
+    if (data.substr(8,4)==='0101') { //f00021450101####f7 = Patch Response
 //      println('Patch Response')
 
       const headData = data.substr(12,64*2)
@@ -276,23 +350,25 @@ function handleSysExMidi(data) {
       const match = head.match(/,"name"\s*:\s*"([^"]*)",/)
       active = (match && match.length && match[1].trim() === presetName.trim())
 //      println('match '+(match && match[1]))
-//      println('active '+active)
+//     println('active '+active)
 
+      clearRemoteCache()
+      clearSendCache()
 
       if (active) {
         for (let i=0;i<8;i++) {
           const idx = (layoutColumns ? REVERSE_LAYOUT_COLUMNS_MAP[i] : i);
-          const value = values[idx]
-          const name = names[idx]
+          const value = remoteValues[idx]
+          const name = remoteNames[idx]
 
           sendMidi(0xB0, E1_CC_MSB[idx], ((value * 16383) >> 7) & 0x7F);
           if (highRes) sendMidi(0xB0, E1_CC_LSB[idx], ((value * 16383) >> 0) & 0x7F);
 
           const json = {
-            "name": name,
-            "visible": !!(name && name.trim().length)
+            name: name.substr(0,E1_MAX_LABEL_LENGTH),
+            visible: (!!(name && name.trim().length)) ? true : false
           }
-          const ctrlId = controlIDs[i]
+          const ctrlId = remoteControlIDs[i]
           const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`;
           host.getMidiOutPort(1).sendSysex(data)
         }
@@ -300,6 +376,15 @@ function handleSysExMidi(data) {
       }
 
 
+    }
+  } else if (data && data.substr(0,4)==='f07d') {  // Non-commercial SysEx: Ours!
+    if (data.substr(4,4)==='0004') {
+//      println('reload')
+      clearRemoteCache()
+      if (active) {
+        showPages( remoteControlsBank.selectedPageIndex().get() )
+      }
+      clearSendCache()
     }
   }
   return false;
