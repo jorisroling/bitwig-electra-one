@@ -8,6 +8,8 @@ This **Control Script** for *Bitwig* allows **Remote Control Pages** to be contr
 
 ## History
 
+### v1.08
+Initial work on a second page called **Track**, wich should allows acces to all track related things, like sends.
 ### v1.06
 Some better settings handling. Default MIDI portnames for Windows added (thanks to *Kirkwood West*).
 ### v1.05
