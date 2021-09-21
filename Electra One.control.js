@@ -8,7 +8,7 @@ host.defineMidiPorts(2, 2);
 if (host.platformIsWindows()) {
   host.addDeviceNameBasedDiscoveryPair(["Electra Controller", "MIDIIN3 (Electra Controller)"], ["Electra Controller", "MIDIOUT3 (Electra Controller)"]);
 } else if (host.platformIsMac()) {
-  host.addDeviceNameBasedDiscoveryPair(["Electra Controller A Electra Port 1", "Electra Controller A Electra CTRL"], ["Electra Controller A Electra Port 1", "Electra Controller A Electra CTRL"]);
+  host.addDeviceNameBasedDiscoveryPair(["Electra Controller Electra Port 1", "Electra Controller Electra CTRL"], ["Electra Controller Electra Port 1", "Electra Controller Electra CTRL"]);
 } else if (host.platformIsLinux()) {
   host.addDeviceNameBasedDiscoveryPair(["Electra Controller Electra Port 1", "Electra Controller Electra CTRL"], ["Electra Controller Electra Port 1", "Electra Controller Electra CTRL"]);
 }
