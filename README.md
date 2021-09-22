@@ -8,6 +8,9 @@ This **Control Script** for *Bitwig* allows **Remote Control Pages** to be contr
 
 ## History
 
+### v1.09
+Some more features on Send: now it shows Pre-fader (blue) or Post-fader (yellow) indicator
+Combined Device & Track page called "Combined" (for now)
 ### v1.08
 Initial work on a second page called **Track**, wich should allows acces to all track related things, like sends.
 ### v1.06
