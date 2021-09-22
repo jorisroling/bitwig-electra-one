@@ -1,16 +1,19 @@
 loadAPI(10);
 
+const CONTROLLER_SCRIPT_VERSION = '1.09'
+const CONTROLLER_BASE_NAME = `Electra One Control`
+const CONTROLLER_SCRIPT_NAME = `${CONTROLLER_BASE_NAME}` //  v${CONTROLLER_SCRIPT_VERSION}
 host.setShouldFailOnDeprecatedUse(true);
-host.defineController("Bonboa", "Electra One Control", "1.08", "7f4b4851-911b-4dbf-a6a7-ee7801296ce1", "Joris Röling");
+host.defineController('Bonboa', CONTROLLER_SCRIPT_NAME, CONTROLLER_SCRIPT_VERSION, '7f4b4851-911b-4dbf-a6a7-ee7801296ce1', 'Joris Röling');
 
 host.defineMidiPorts(2, 2);
 
 if (host.platformIsWindows()) {
-  host.addDeviceNameBasedDiscoveryPair(["Electra Controller", "MIDIIN3 (Electra Controller)"], ["Electra Controller", "MIDIOUT3 (Electra Controller)"]);
+  host.addDeviceNameBasedDiscoveryPair(['Electra Controller', 'MIDIIN3 (Electra Controller)'], ['Electra Controller', 'MIDIOUT3 (Electra Controller)']);
 } else if (host.platformIsMac()) {
-  host.addDeviceNameBasedDiscoveryPair(["Electra Controller Electra Port 1", "Electra Controller Electra CTRL"], ["Electra Controller Electra Port 1", "Electra Controller Electra CTRL"]);
+  host.addDeviceNameBasedDiscoveryPair(['Electra Controller Electra Port 1', 'Electra Controller Electra CTRL'], ['Electra Controller Electra Port 1', 'Electra Controller Electra CTRL']);
 } else if (host.platformIsLinux()) {
-  host.addDeviceNameBasedDiscoveryPair(["Electra Controller Electra Port 1", "Electra Controller Electra CTRL"], ["Electra Controller Electra Port 1", "Electra Controller Electra CTRL"]);
+  host.addDeviceNameBasedDiscoveryPair(['Electra Controller Electra Port 1', 'Electra Controller Electra CTRL'], ['Electra Controller Electra Port 1', 'Electra Controller Electra CTRL']);
 }
 
 let active = false
@@ -21,11 +24,20 @@ const layoutColumns = true;
 let remoteControlsBank = null;
 let cursorTrack = null
 
-let E1_PRESET_NAME = "Bitwig Control"
+const COLOR_WHITE = 'FFFFFF'
+const COLOR_RED = 'F45C51'
+const COLOR_YELLOW = 'F49500'
+const COLOR_BLUE = '529DEC'
+const COLOR_GREEN = '03A598'
+const COLOR_MAGENTA = 'C44795'
+
+
+let E1_PRESET_NAME = 'Bitwig Control'
 let E1_CC_MSB = [3, 9, 14, 15, 16, 17, 18, 19];
 let E1_CC_LSB = [];
 const E1_PLAY_CC = 64
 const E1_STOP_CC = 65
+const E1_RECORD_CC = 66
 
 let transport
 
@@ -73,7 +85,7 @@ function clearSendCache() {
       sendCache[i]={name:'',visible:true,state:-1}
       showSend(i,'')
     }
-    sendCache[i]={name:'',visible:false,state:-1}
+    sendCache[i]={name:'',visible:false,color:COLOR_YELLOW,state:-1}
   }
 }
 clearSendCache()
@@ -103,29 +115,33 @@ function str2hex(str) {
   return arr1.join(' ');
 }
 
-function showSend(index,name) {
+function showSend(index,name,color = COLOR_YELLOW) {
   const json = {
     name: name.substr(0,E1_MAX_LABEL_LENGTH),
-    visible: (name && name.trim().length) ? true : false
+    visible: (name && name.trim().length) ? true : false,
+    color: color,
   }
 //  println('showSend('+index+','+name+') json '+JSON.stringify(json))
-  if (index>=0 && index<=sendControlIDs.length && (sendCache[index].name !== json.name || sendCache[index].visible !== json.visible)) {
-    const ctrlId = sendControlIDs[index]
-    const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`;
-    host.getMidiOutPort(1).sendSysex(data)
+  if (index>=0 && index<=sendControlIDs.length && (sendCache[index].name !== json.name || sendCache[index].visible !== json.visible || sendCache[index].color !== json.color)) {
+    for (let pg=0;pg<2;pg++) {
+      const ctrlId = sendControlIDs[index] + (pg? 36 : 0)
+      const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`;
+      host.getMidiOutPort(1).sendSysex(data)
+    }
     sendCache[index].name = json.name
     sendCache[index].visible = json.visible
+    sendCache[index].color = json.color
   }
 }
 
 function showPages(value) {
-//  println("showPages "+value+  ' pageCount '+pageCount)
+//  println('showPages '+value+  ' pageCount '+pageCount)
   const remoteNames=remoteControlsBank.pageNames().get()
 
   for (let i = 0; i < E1_MAX_PAGE_COUNT; i++) {
     const state = i < pageCount ? ((i==value) ? 127 : 0) : 0
-//  println("state("+i+")  "+state)
-//  println("remoteCache("+i+")  "+remoteCache[i].state)
+//  println('state('+i+')  '+state)
+//  println('remoteCache('+i+')  '+remoteCache[i].state)
     if (remoteCache[i].state !== state ) {
       sendMidi(0xB0, E1_PAGE_CC + i, state );
       remoteCache[i].state = state
@@ -135,11 +151,15 @@ function showPages(value) {
       name: name.substr(0,E1_MAX_LABEL_LENGTH),
       visible: (!!((i < pageCount) && name && name.trim().length)) ? true : false
     }
-//  println("remoteCache("+i+")  name "+remoteCache[i].name+ "  visible "+remoteCache[i].visible+  "  json "+JSON.stringify(json))
+//  println('remoteCache('+i+')  name '+remoteCache[i].name+ '  visible '+remoteCache[i].visible+  '  json '+JSON.stringify(json))
     if (remoteCache[i].name !== json.name || remoteCache[i].visible !== json.visible) {
-      const ctrlId = E1_PAGE_CTRL_ID + i
-      const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`;
-      host.getMidiOutPort(1).sendSysex(data)
+      for (let pg=0;pg<2;pg++) {
+        if (pg==0 || (pg==1 && i<12)) {
+          const ctrlId = E1_PAGE_CTRL_ID + i + (pg ? 72 : 0)
+          const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`;
+          host.getMidiOutPort(1).sendSysex(data)
+        }
+      }
       remoteCache[i].name = json.name
       remoteCache[i].visible = json.visible
 /*    } else {*/
@@ -152,9 +172,11 @@ function showPages(value) {
       name: name.substr(0,E1_MAX_LABEL_LENGTH),
       visible: (!!(name && name.trim().length)) ? true : false
     }
-    const ctrlId = E1_PAGE_NAME_CTRL_ID
-    const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`;
-    host.getMidiOutPort(1).sendSysex(data)
+    for (let pg=0;pg<2;pg++) {
+      const ctrlId = E1_PAGE_NAME_CTRL_ID + (pg ? 72 : 0)
+      const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`;
+      host.getMidiOutPort(1).sendSysex(data)
+    }
   }
 }
 
@@ -163,9 +185,15 @@ function init() {
   transport = host.createTransport();
 
   transport.isPlaying().addValueObserver( value => {
-    //println('TRSNP '+value)
+    //println('TRSNP play '+value)
     sendMidi(0xB0, E1_PLAY_CC, value?1:0);
   })
+
+  transport.isArrangerRecordEnabled().addValueObserver( value => {
+    //println('TRSNP record '+value)
+    sendMidi(0xB0, E1_RECORD_CC, value?1:0);
+  })
+
   let controls = [];
   for (let c = 0; c < 128; c++) controls.push(c + '')
   let preferences = host.getPreferences();
@@ -188,7 +216,7 @@ function init() {
   });
 
   for (let c=0;c<8;c++) {
-    preferences.getNumberSetting(`Remote Control Parameter #${c+1}`, 'Electra One Control IDs', 1, 432, 1, 'control', remoteControlIDs[c]).addValueObserver(function(value) {
+    preferences.getNumberSetting(`Remote Control Parameter #${c+1}`, `${CONTROLLER_BASE_NAME} IDs`, 1, 432, 1, 'control', remoteControlIDs[c]).addValueObserver(function(value) {
       remoteControlIDs[c] = value;
     });
   }
@@ -198,7 +226,7 @@ function init() {
   host.getMidiInPort(1).setSysexCallback(handleSysExMidi);
 
 
-  cursorTrack = host.createCursorTrack("E1_CURSOR_TRACK", "Cursor Track", E1_MAX_SEND_COUNT, 0, true);
+  cursorTrack = host.createCursorTrack('E1_CURSOR_TRACK', 'Cursor Track', E1_MAX_SEND_COUNT, 0, true);
 
   for (let s=0;s<E1_MAX_SEND_COUNT;s++) {
   	cursorTrack.getSend(s).value().addValueObserver((value) => {
@@ -214,15 +242,19 @@ function init() {
       sendValues[s] = value
   	})
   	cursorTrack.getSend(s).name().addValueObserver((name) => {
-  		println('Send '+s+' name '+name)
+//  		println('Send '+s+' name '+name)
 
-      showSend(s,name)
+      showSend(s,name,sendCache[s].color)
+  	})
+    cursorTrack.getSend(s).isPreFader().addValueObserver((preFader) => {
+//  		println('Send '+s+' preFader '+preFader)
+      showSend(s,sendCache[s].name,preFader ? COLOR_BLUE : COLOR_YELLOW)
   	})
   }
 
   //let sendBank = host.createEffectTrackBank(12,0)
 
-  let cursorDevice = cursorTrack.createCursorDevice("E1_CURSOR_DEVICE", "Cursor Device", 0, CursorDeviceFollowMode.FOLLOW_SELECTION);
+  let cursorDevice = cursorTrack.createCursorDevice('E1_CURSOR_DEVICE', 'Cursor Device', 0, CursorDeviceFollowMode.FOLLOW_SELECTION);
 
   remoteControlsBank = cursorDevice.createCursorRemoteControlsPage(8);
 
@@ -266,9 +298,11 @@ function init() {
           visible: (!!(name && name.trim().length)) ? true : false
         }
 //        println(`name [${json.name}] visible [${json.visible}] ${JSON.stringify(json)} ${str2hex(JSON.stringify(json))}`)
-        const ctrlId = remoteControlIDs[i]
-        const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`;
-        host.getMidiOutPort(1).sendSysex(data)
+        for (let pg=0;pg<2;pg++) {
+          const ctrlId = remoteControlIDs[i]+(pg?72:0)
+          const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`;
+          host.getMidiOutPort(1).sendSysex(data)
+        }
       }
     })
   }
@@ -283,7 +317,7 @@ function init() {
   /* Patch Request */
   host.getMidiOutPort(1).sendSysex(`F0 00 21 45 02 01 F7`)
 
-  println("Electra One Control initialized!");
+  println(`${CONTROLLER_SCRIPT_NAME} v${CONTROLLER_SCRIPT_VERSION} initialized!`);
 }
 
 function handleMidi(status, data1, data2) {
@@ -305,7 +339,7 @@ function handleMidi(status, data1, data2) {
         if (!highRes) {
           cursorTrack.getSend(idx).set(sendValues[idx], 16384);
         }
-      } else if (highRes && data1 >= (E1_SEND_CC + 32) && data1 <= (E1_SEND_CC + E1_MAX_SEND_COUNT + 32) ) {
+      } else if (highRes && data1 >= (E1_SEND_CC + 32) && data1 < (E1_SEND_CC + E1_MAX_SEND_COUNT + 32) ) {
         idx = data1 - (E1_SEND_CC + 32)
         sendValues[idx] = (sendValues[idx] & (0x7F << 7)) | (data2 << 0);
         cursorTrack.getSend(idx).set(sendValues[idx], 16384);
@@ -324,6 +358,12 @@ function handleMidi(status, data1, data2) {
       } else if (data1 == E1_STOP_CC && data2) {
         transport.stop()
         transport.rewind()
+      } else if (data1 == E1_RECORD_CC) {
+        if (data2) {
+          transport.record()
+        } else {
+          transport.stop()
+        }
       }
     }
   }
@@ -359,7 +399,7 @@ function handleSysExMidi(data) {
         for (let i=0;i<8;i++) {
           const idx = (layoutColumns ? REVERSE_LAYOUT_COLUMNS_MAP[i] : i);
           const value = remoteValues[idx]
-          const name = remoteNames[idx]
+          const name = remoteNames[idx] || ''
 
           sendMidi(0xB0, E1_CC_MSB[idx], ((value * 16383) >> 7) & 0x7F);
           if (highRes) sendMidi(0xB0, E1_CC_LSB[idx], ((value * 16383) >> 0) & 0x7F);
@@ -368,9 +408,11 @@ function handleSysExMidi(data) {
             name: name.substr(0,E1_MAX_LABEL_LENGTH),
             visible: (!!(name && name.trim().length)) ? true : false
           }
-          const ctrlId = remoteControlIDs[i]
-          const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`;
-          host.getMidiOutPort(1).sendSysex(data)
+          for (let pg=0;pg<2;pg++) {
+            const ctrlId = remoteControlIDs[i]+(pg?72:0)
+            const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`;
+            host.getMidiOutPort(1).sendSysex(data)
+          }
         }
         showPages( remoteControlsBank.selectedPageIndex().get() )
       }
@@ -393,5 +435,5 @@ function handleSysExMidi(data) {
 function flush() {}
 
 function exit() {
-  println("Electra One Control exited!");
+  println(`${CONTROLLER_SCRIPT_NAME} v${CONTROLLER_SCRIPT_VERSION} exited!`);
 }
