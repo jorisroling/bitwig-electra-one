@@ -1,4 +1,4 @@
-loadAPI(7);
+loadAPI(10);
 
 host.setShouldFailOnDeprecatedUse(true);
 host.defineController("Bonboa", "Electra One Control", "1.08", "7f4b4851-911b-4dbf-a6a7-ee7801296ce1", "Joris Röling");
