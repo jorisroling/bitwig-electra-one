@@ -1,7 +1,8 @@
 loadAPI(10);
 
-const CONTROLLER_SCRIPT_NAME = 'Electra One Control'
 const CONTROLLER_SCRIPT_VERSION = '1.09'
+const CONTROLLER_BASE_NAME = `Electra One Control`
+const CONTROLLER_SCRIPT_NAME = `${CONTROLLER_BASE_NAME}` //  v${CONTROLLER_SCRIPT_VERSION}
 host.setShouldFailOnDeprecatedUse(true);
 host.defineController('Bonboa', CONTROLLER_SCRIPT_NAME, CONTROLLER_SCRIPT_VERSION, '7f4b4851-911b-4dbf-a6a7-ee7801296ce1', 'Joris Röling');
 
@@ -122,9 +123,11 @@ function showSend(index,name,color = COLOR_YELLOW) {
   }
 //  println('showSend('+index+','+name+') json '+JSON.stringify(json))
   if (index>=0 && index<=sendControlIDs.length && (sendCache[index].name !== json.name || sendCache[index].visible !== json.visible || sendCache[index].color !== json.color)) {
-    const ctrlId = sendControlIDs[index]
-    const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`;
-    host.getMidiOutPort(1).sendSysex(data)
+    for (let pg=0;pg<2;pg++) {
+      const ctrlId = sendControlIDs[index] + (pg? 36 : 0)
+      const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`;
+      host.getMidiOutPort(1).sendSysex(data)
+    }
     sendCache[index].name = json.name
     sendCache[index].visible = json.visible
     sendCache[index].color = json.color
@@ -150,9 +153,13 @@ function showPages(value) {
     }
 //  println('remoteCache('+i+')  name '+remoteCache[i].name+ '  visible '+remoteCache[i].visible+  '  json '+JSON.stringify(json))
     if (remoteCache[i].name !== json.name || remoteCache[i].visible !== json.visible) {
-      const ctrlId = E1_PAGE_CTRL_ID + i
-      const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`;
-      host.getMidiOutPort(1).sendSysex(data)
+      for (let pg=0;pg<2;pg++) {
+        if (pg==0 || (pg==1 && i<12)) {
+          const ctrlId = E1_PAGE_CTRL_ID + i + (pg ? 72 : 0)
+          const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`;
+          host.getMidiOutPort(1).sendSysex(data)
+        }
+      }
       remoteCache[i].name = json.name
       remoteCache[i].visible = json.visible
 /*    } else {*/
@@ -165,9 +172,11 @@ function showPages(value) {
       name: name.substr(0,E1_MAX_LABEL_LENGTH),
       visible: (!!(name && name.trim().length)) ? true : false
     }
-    const ctrlId = E1_PAGE_NAME_CTRL_ID
-    const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`;
-    host.getMidiOutPort(1).sendSysex(data)
+    for (let pg=0;pg<2;pg++) {
+      const ctrlId = E1_PAGE_NAME_CTRL_ID + (pg ? 72 : 0)
+      const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`;
+      host.getMidiOutPort(1).sendSysex(data)
+    }
   }
 }
 
@@ -207,7 +216,7 @@ function init() {
   });
 
   for (let c=0;c<8;c++) {
-    preferences.getNumberSetting(`Remote Control Parameter #${c+1}`, `${CONTROLLER_SCRIPT_NAME} IDs`, 1, 432, 1, 'control', remoteControlIDs[c]).addValueObserver(function(value) {
+    preferences.getNumberSetting(`Remote Control Parameter #${c+1}`, `${CONTROLLER_BASE_NAME} IDs`, 1, 432, 1, 'control', remoteControlIDs[c]).addValueObserver(function(value) {
       remoteControlIDs[c] = value;
     });
   }
@@ -233,12 +242,12 @@ function init() {
       sendValues[s] = value
   	})
   	cursorTrack.getSend(s).name().addValueObserver((name) => {
-  		println('Send '+s+' name '+name)
+//  		println('Send '+s+' name '+name)
 
       showSend(s,name,sendCache[s].color)
   	})
     cursorTrack.getSend(s).isPreFader().addValueObserver((preFader) => {
-  		println('Send '+s+' preFader '+preFader)
+//  		println('Send '+s+' preFader '+preFader)
       showSend(s,sendCache[s].name,preFader ? COLOR_BLUE : COLOR_YELLOW)
   	})
   }
@@ -289,9 +298,11 @@ function init() {
           visible: (!!(name && name.trim().length)) ? true : false
         }
 //        println(`name [${json.name}] visible [${json.visible}] ${JSON.stringify(json)} ${str2hex(JSON.stringify(json))}`)
-        const ctrlId = remoteControlIDs[i]
-        const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`;
-        host.getMidiOutPort(1).sendSysex(data)
+        for (let pg=0;pg<2;pg++) {
+          const ctrlId = remoteControlIDs[i]+(pg?72:0)
+          const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`;
+          host.getMidiOutPort(1).sendSysex(data)
+        }
       }
     })
   }
@@ -376,7 +387,7 @@ function handleSysExMidi(data) {
         head += String.fromCharCode(parseInt(headData.substr(i,2),16));
       }
 
-      const match = head.match(/,'name'\s*:\s*'([^']*)',/)
+      const match = head.match(/,"name"\s*:\s*"([^"]*)",/)
       active = (match && match.length && match[1].trim() === presetName.trim())
 //      println('match '+(match && match[1]))
 //     println('active '+active)
@@ -388,7 +399,7 @@ function handleSysExMidi(data) {
         for (let i=0;i<8;i++) {
           const idx = (layoutColumns ? REVERSE_LAYOUT_COLUMNS_MAP[i] : i);
           const value = remoteValues[idx]
-          const name = remoteNames[idx]
+          const name = remoteNames[idx] || ''
 
           sendMidi(0xB0, E1_CC_MSB[idx], ((value * 16383) >> 7) & 0x7F);
           if (highRes) sendMidi(0xB0, E1_CC_LSB[idx], ((value * 16383) >> 0) & 0x7F);
@@ -397,9 +408,11 @@ function handleSysExMidi(data) {
             name: name.substr(0,E1_MAX_LABEL_LENGTH),
             visible: (!!(name && name.trim().length)) ? true : false
           }
-          const ctrlId = remoteControlIDs[i]
-          const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`;
-          host.getMidiOutPort(1).sendSysex(data)
+          for (let pg=0;pg<2;pg++) {
+            const ctrlId = remoteControlIDs[i]+(pg?72:0)
+            const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`;
+            host.getMidiOutPort(1).sendSysex(data)
+          }
         }
         showPages( remoteControlsBank.selectedPageIndex().get() )
       }
@@ -422,5 +435,5 @@ function handleSysExMidi(data) {
 function flush() {}
 
 function exit() {
-  println(`${CONTROLLER_SCRIPT_NAME} exited!`);
+  println(`${CONTROLLER_SCRIPT_NAME} v${CONTROLLER_SCRIPT_VERSION} exited!`);
 }
