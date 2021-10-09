@@ -9,7 +9,7 @@ const E1_PAGE_INDEX  = 1
 const E1_PRESET_NAME = 'Bitwig Control'
 
 
-/* --------------------------------------*/
+/* --------------------------------------  v1.12  -- */
 host.defineMidiPorts(2, 2)
 
 if (host.platformIsWindows()) {
@@ -132,8 +132,8 @@ function str2hex(str) {
 
 function showSend(index, name, color = COLOR_YELLOW, force = false) {
   const json = {
-    name: name.substr(0, E1_MAX_LABEL_LENGTH),
-    visible: (name && name.trim().length) ? true : false,
+    name: cleanupLabel(name),
+    visible: cleanupLabel(name).length ? true : false,
     color: color,
   }
   if (index >= 0 && index < sendControlIDs.length && (force || (sendCache[index].name !== json.name || sendCache[index].visible !== json.visible || sendCache[index].color !== json.color))) {
@@ -151,8 +151,8 @@ function showSend(index, name, color = COLOR_YELLOW, force = false) {
 function showRemoteControl(index, name, force = false) {
   remoteControlNames[index] = name
   const json = {
-    name: name ? name.substr(0, E1_MAX_LABEL_LENGTH) : `Parameter #${index + 1}`,
-    visible: (name && name.trim().length) ? true : false
+    name: cleanupLabel(name) ? cleanupLabel(name) : `Parameter #${index + 1}`,
+    visible: cleanupLabel(name).length ? true : false
   }
   if (index >= 0 && index < remoteControlIDs.length && (force || (remoteControlCache[index].name !== json.name || remoteControlCache[index].visible !== json.visible))) {
     if (presetActive) {
@@ -163,6 +163,11 @@ function showRemoteControl(index, name, force = false) {
     remoteControlCache[index].name = json.name
     remoteControlCache[index].visible = json.visible
   }
+}
+
+function cleanupLabel(name) {
+  if (!name) name = ''
+  return name.replace('&',' ').replace(/\s+/,' ').trim().substr(0, E1_MAX_LABEL_LENGTH)
 }
 
 function showPages(value, force) {
@@ -176,9 +181,10 @@ function showPages(value, force) {
     }
     const name = (remoteControlNames && i < remoteControlNames.length) ? remoteControlNames[i] : ''
     const json = {
-      name: name.substr(0, E1_MAX_LABEL_LENGTH),
-      visible: ((i < pageCount) && name && name.trim().length) ? true : false
+      name: cleanupLabel(name),
+      visible: ((i < pageCount) && cleanupLabel(name).length) ? true : false
     }
+    println(JSON.stringify(json))
     if (force || (remotePageCache[i].name !== json.name || remotePageCache[i].visible !== json.visible)) {
       if (presetActive) {
         const ctrlId = E1_PAGE_CTRL_ID + E1_CONTROL_OFFSET + i
@@ -192,8 +198,8 @@ function showPages(value, force) {
   if (presetActive) {
     const name = (remoteControlNames && value >= 0 && value < remoteControlNames.length) ? remoteControlNames[value] : ''
     const json = {
-      name: name.substr(0, E1_MAX_LABEL_LENGTH),
-      visible: (name && name.trim().length) ? true : false
+      name: cleanupLabel(name),
+      visible: cleanupLabel(name).length ? true : false
     }
     const ctrlId = E1_PAGE_NAME_CTRL_ID + E1_CONTROL_OFFSET
     const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`
