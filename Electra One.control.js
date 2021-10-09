@@ -245,7 +245,6 @@ function init() {
     })
 
     parameter.name().addValueObserver(function(name) {
-      const idx = (layoutColumns ? REVERSE_LAYOUT_COLUMNS_MAP[i] : i)
       remoteNames[i] = name
       if (active) {
         const json = {
@@ -322,6 +321,7 @@ function handleSysExMidi(data) {
 
       const match = head.match(/,"name"\s*:\s*"([^"]*)",/)
       active = (match && match.length && match[1].trim() === presetName.trim())
+      println(`Control changing ${active?'IS':'is NOT'} active`)
 
       clearRemoteCache()
       clearSendCache()
