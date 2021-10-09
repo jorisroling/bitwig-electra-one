@@ -8,6 +8,8 @@ This **Control Script** for *Bitwig* allows **Remote Control Pages** to be contr
 
 ## History
 
+### v1.11
+Some better caching of control state, so after starting, or changing Electra One presets, it should better reflect actual state.
 ### v1.10
 The Bitwig Control is now one page containing the combined Device & Track controls
 ### v1.09
