@@ -46,8 +46,6 @@ To use this setup, copy the **Electra One.control.js** file to **~/Documents/Bit
 
 (This should be default on Mac and Windows, I don't know the port naming on Linux, if anyone knows, please give me a hint, and I will implement the correct naming)
 
-The **Control ID's** are only of interest to those that want to change the layout of their **Bitwig Control** preset.
-
 ![images/settings.jpg](https://github.com/jorisroling/bitwig-electra-one/raw/main/images/settings.png)
 
 That's it, it should work now. Go to any Bitwig track and add/select a device. Open its **Remote Parameter Panel**.
