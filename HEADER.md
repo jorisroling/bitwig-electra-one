@@ -1,3 +1,6 @@
+**HEADS-UP** Please visit this [Github Repo](https://github.com/jorisroling/bitwig-electra-one) for the Bitwig Control Script mentioned below
+
+
 # Bitwig Control for Electra One
 
 This **Control Script** for *Bitwig* allows **Remote Control Pages** to be controlled by *Electra One*. It has the following features:
@@ -8,8 +11,6 @@ This **Control Script** for *Bitwig* allows **Remote Control Pages** to be contr
 
 ## History
 
-### v1.12
-Supports Electra One firmware v2.1.2 feature (Preset Request)
 ### v1.11
 Some better caching of control state, so after starting, or changing Electra One presets, it should better reflect actual state.
 ### v1.10
@@ -47,6 +48,8 @@ To use this setup, copy the **Electra One.control.js** file to **~/Documents/Bit
 - (out) **MIDIOUT3 (Electra Controller)**
 
 (This should be default on Mac and Windows, I don't know the port naming on Linux, if anyone knows, please give me a hint, and I will implement the correct naming)
+
+The **Control ID's** are only of interest to those that want to change the layout of their **Bitwig Control** preset.
 
 ![images/settings.jpg](https://github.com/jorisroling/bitwig-electra-one/raw/main/images/settings.png)
 

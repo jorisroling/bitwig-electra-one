@@ -51,7 +51,16 @@
       "id": 1,
       "name": "Electra One Port",
       "port": 1,
-      "channel": 1
+      "channel": 1,
+      "patch": [
+        {
+          "request": [
+            "7D",
+            "00",
+            "04"
+          ]
+        }
+      ]
     }
   ],
   "overlays": [
