@@ -8,6 +8,8 @@ This **Control Script** for *Bitwig* allows **Remote Control Pages** to be contr
 
 ## History
 
+### v1.13
+Fixes & Preset Modes (support for Bacara Sequencer)
 ### v1.12
 Supports Electra One firmware v2.1.2 feature (Preset Request)
 ### v1.11
