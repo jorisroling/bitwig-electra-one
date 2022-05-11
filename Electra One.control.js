@@ -10,7 +10,7 @@ const E1_PRESET_NAME = 'Bitwig Control'
 const E1_PRESET_NAME_ALTERNATIVE = 'Bacara'
 
 
-/* --------------------------------------  v1.14  -- */
+/* --------------------------------------  v1.15  -- */
 host.defineMidiPorts(2, 2)
 
 if (host.platformIsWindows()) {
