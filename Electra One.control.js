@@ -1,6 +1,6 @@
 loadAPI(10)
 
-const CONTROLLER_SCRIPT_VERSION = '1.13'
+const CONTROLLER_SCRIPT_VERSION = '1.15'
 const CONTROLLER_BASE_NAME = 'Electra One Control'
 const CONTROLLER_SCRIPT_NAME = `${CONTROLLER_BASE_NAME}` //  v${CONTROLLER_SCRIPT_VERSION}
 host.setShouldFailOnDeprecatedUse(true)
@@ -392,6 +392,11 @@ function handleSysExMidi(data) {
     if (data.substr(8, 4) === '017f') { //f0002145017F####f7 = Response data, Electra information
       const json = sysexToJSON(data.substr(12, data.length - 14))
       if (json && json.versionText) {
+        if (!json.versionText.match(/^v\d+\.\d+\.\d+$/)) {
+          if (json.versionText.match(/^v\d+\.\d+$/)) {
+            json.versionText+='.0'
+          }
+        }
         e1_firmware_version = parseInt(json.versionText.replace(/[v.]/g, ''))
         if (e1_firmware_version && e1_firmware_version < E1_MINIMAL_VERSION_NUMBER) {
           host.showPopupNotification(`${CONTROLLER_SCRIPT_NAME}: Please upgrade the firmware on your Electra One to at least ${E1_MINIMAL_VERSION_TEXT}`)
