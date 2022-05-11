@@ -8,6 +8,10 @@ This **Control Script** for *Bitwig* allows **Remote Control Pages** to be contr
 
 ## History
 
+### v1.15
+Version check fixed for v2.2 (without .0 suffix)
+### v1.14
+Can't remember
 ### v1.13
 Fixes & Preset Modes (support for Bacara Sequencer)
 ### v1.12
