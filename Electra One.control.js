@@ -1,6 +1,6 @@
 loadAPI(10)
 
-const CONTROLLER_SCRIPT_VERSION = '1.15'
+const CONTROLLER_SCRIPT_VERSION = '1.16'
 const CONTROLLER_BASE_NAME = 'Electra One Control'
 const CONTROLLER_SCRIPT_NAME = `${CONTROLLER_BASE_NAME}` //  v${CONTROLLER_SCRIPT_VERSION}
 host.setShouldFailOnDeprecatedUse(true)
@@ -10,7 +10,7 @@ const E1_PRESET_NAME = 'Bitwig Control'
 const E1_PRESET_NAME_ALTERNATIVE = 'Bacara'
 
 
-/* --------------------------------------  v1.15  -- */
+/* --------------------------------------  v1.16  -- */
 host.defineMidiPorts(2, 2)
 
 if (host.platformIsWindows()) {
@@ -26,11 +26,13 @@ const presetModes = {
     request: 4,
     preset: 'Bitwig Control',
     pageIndex: 1,
+    fastPage: true,
   },
   bacara: {
     request: 3,
     preset: 'Bacara',
     pageIndex: 7,
+    fastPage: false,
   },
 }
 
@@ -58,9 +60,12 @@ let E1_CC_MSB = [3, 9, 14, 15, 16, 17, 18, 19]
 let E1_CC_LSB = []
 
 let pageIndex = E1_PAGE_INDEX
-let controlOffset = ((pageIndex - 1) * 36)
+const controlsPerPage = 36
+let controlOffset = ((pageIndex - 1) * controlsPerPage)
 const E1_PAGE_NAME_CTRL_ID = 1
 const E1_PAGE_CTRL_ID = 13
+
+let fastPage = false
 const remoteControlIDs = [2, 3, 4, 5, 8, 9, 10, 11]
 const sendControlIDs = [25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36]
 
@@ -160,6 +165,12 @@ function showSend(index, name, color = COLOR_YELLOW, force = false) {
       const ctrlId = sendControlIDs[index] + controlOffset
       const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`
       host.getMidiOutPort(1).sendSysex(data)
+
+      if (fastPage) {
+        const ctrlId = sendControlIDs[index] + controlOffset + controlsPerPage
+        const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`
+        host.getMidiOutPort(1).sendSysex(data)
+      }
     }
     sendCache[index].name = json.name
     sendCache[index].visible = json.visible
@@ -178,6 +189,12 @@ function showRemoteControl(index, name, force = false) {
       const ctrlId = remoteControlIDs[index] + controlOffset
       const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`
       host.getMidiOutPort(1).sendSysex(data)
+
+      if (fastPage) {
+        const ctrlId = remoteControlIDs[index] + controlOffset + controlsPerPage
+        const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`
+        host.getMidiOutPort(1).sendSysex(data)
+      }
     }
     remoteControlCache[index].name = json.name
     remoteControlCache[index].visible = json.visible
@@ -210,6 +227,12 @@ function showPages(value, force) {
         const ctrlId = E1_PAGE_CTRL_ID + controlOffset + i
         const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`
         host.getMidiOutPort(1).sendSysex(data)
+
+        if (fastPage) {
+          const ctrlId = E1_PAGE_CTRL_ID + controlOffset + controlsPerPage + i
+          const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`
+          host.getMidiOutPort(1).sendSysex(data)
+        }
       }
       remotePageCache[i].name = json.name
       remotePageCache[i].visible = json.visible
@@ -224,6 +247,12 @@ function showPages(value, force) {
     const ctrlId = E1_PAGE_NAME_CTRL_ID + controlOffset
     const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`
     host.getMidiOutPort(1).sendSysex(data)
+
+    if (fastPage) {
+      const ctrlId = E1_PAGE_NAME_CTRL_ID + controlOffset + controlsPerPage
+      const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`
+      host.getMidiOutPort(1).sendSysex(data)
+    }
   }
 }
 
@@ -337,9 +366,9 @@ function handleMidi(status, data1, data2) {
       if (E1_CC_MSB.indexOf(data1) >= 0) {
         let idx = E1_CC_MSB.indexOf(data1)
         remoteControlValues[idx] = (remoteControlValues[idx] & (0x7F << 0)) | (data2 << 7)
-        if (!highRes) {
+//        if (!highRes) {
           remoteControlsBank.getParameter(layoutColumns ? LAYOUT_COLUMNS_MAP[idx] : idx).set(remoteControlValues[idx], 16384)
-        }
+//        }
       } else if (highRes && E1_CC_LSB.indexOf(data1) >= 0) {
         let idx = E1_CC_LSB.indexOf(data1)
         remoteControlValues[idx] = (remoteControlValues[idx] & (0x7F << 7)) | (data2 << 0)
@@ -347,9 +376,9 @@ function handleMidi(status, data1, data2) {
       } else if (data1 >= E1_SEND_CC && data1 <= (E1_SEND_CC + E1_MAX_SEND_COUNT)) {
         let idx = data1 - E1_SEND_CC
         sendValues[idx] = (sendValues[idx] & (0x7F << 0)) | (data2 << 7)
-        if (!highRes) {
+//        if (!highRes) {
           cursorTrack.getSend(idx).set(sendValues[idx], 16384)
-        }
+//        }
       } else if (highRes && data1 >= (E1_SEND_CC + 32) && data1 < (E1_SEND_CC + E1_MAX_SEND_COUNT + 32) ) {
         let idx = data1 - (E1_SEND_CC + 32)
         sendValues[idx] = (sendValues[idx] & (0x7F << 7)) | (data2 << 0)
@@ -445,7 +474,8 @@ function handleSysExMidi(data) {
         if (presetModes[mode].request == req) {
           presetName = presetModes[mode].preset
           pageIndex = presetModes[mode].pageIndex
-          controlOffset = ((pageIndex - 1) * 36)
+          fastPage = presetModes[mode].fastPage
+          controlOffset = ((pageIndex - 1) * controlsPerPage)
           println(`Switched to ${presetName} mode`)
           deactivateAndRequest()
         }
