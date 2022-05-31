@@ -46,6 +46,8 @@ Changes to these mapped parameters will be reflected on *Electra One* (and vice 
 
 ## History
 
+### v1.17
+High Resolution option in Controllers (needs to be enabled for Precision Page)
 ### v1.16
 Precise (14-bit) and Fast (7 bit) pages (te last one being new)
 ### v1.15
