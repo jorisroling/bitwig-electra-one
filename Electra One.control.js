@@ -1,6 +1,6 @@
 loadAPI(10)
 
-const CONTROLLER_SCRIPT_VERSION = '1.16'
+const CONTROLLER_SCRIPT_VERSION = '1.17'
 const CONTROLLER_BASE_NAME = 'Electra One Control'
 const CONTROLLER_SCRIPT_NAME = `${CONTROLLER_BASE_NAME}` //  v${CONTROLLER_SCRIPT_VERSION}
 host.setShouldFailOnDeprecatedUse(true)
@@ -10,7 +10,7 @@ const E1_PRESET_NAME = 'Bitwig Control'
 const E1_PRESET_NAME_ALTERNATIVE = 'Bacara'
 
 
-/* --------------------------------------  v1.16  -- */
+/* --------------------------------------  v1.17  -- */
 host.defineMidiPorts(2, 2)
 
 if (host.platformIsWindows()) {
@@ -39,7 +39,8 @@ const presetModes = {
 let presetActive = false
 let e1_firmware_version
 
-const highRes = true
+const BOOLEAN_OPTIONS = [ "Off", "On" ];
+let highRes = true
 const layoutColumns = true
 
 const E1_MINIMAL_VERSION_TEXT = 'v2.1.2'
@@ -65,7 +66,7 @@ let controlOffset = ((pageIndex - 1) * controlsPerPage)
 const E1_PAGE_NAME_CTRL_ID = 1
 const E1_PAGE_CTRL_ID = 13
 
-let fastPage = false
+let fastPage = true
 const remoteControlIDs = [2, 3, 4, 5, 8, 9, 10, 11]
 const sendControlIDs = [25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36]
 
@@ -258,6 +259,11 @@ function showPages(value, force) {
 
 
 function init() {
+  const preferences = host.getPreferences ();
+  preferences.getEnumSetting ("Enable", "High Resolution (needed for Precise Page)", BOOLEAN_OPTIONS, BOOLEAN_OPTIONS[1]).addValueObserver (function (value) {
+    highRes = value == BOOLEAN_OPTIONS[1];
+  });
+
   let controls = []
   for (let c = 0; c < 128; c++) {
     controls.push(c + '')
