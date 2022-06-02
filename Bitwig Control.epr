@@ -33,7 +33,7 @@
       "bounds": [
         0,
         192,
-        996,
+        826,
         16
       ]
     },
@@ -69,7 +69,7 @@
       "bounds": [
         0,
         192,
-        996,
+        826,
         16
       ]
     },
@@ -113,7 +113,7 @@
       "mode": "momentary",
       "visible": false,
       "name": "",
-      "color": "FFFFFF",
+      "color": "C44795",
       "bounds": [
         0,
         40,
@@ -283,8 +283,8 @@
       "type": "pad",
       "mode": "momentary",
       "visible": true,
-      "name": "UP",
-      "color": "FFFFFF",
+      "name": "PREVIOUS",
+      "color": "F45C51",
       "bounds": [
         850,
         40,
@@ -301,15 +301,15 @@
       ],
       "values": [
         {
+          "id": "value",
           "message": {
             "type": "cc7",
             "deviceId": 1,
-            "parameterNumber": 80,
+            "parameterNumber": 83,
             "onValue": 127,
             "offValue": 0
           },
-          "defaultValue": "off",
-          "id": "value"
+          "defaultValue": "off"
         }
       ]
     },
@@ -454,8 +454,8 @@
       "type": "pad",
       "mode": "momentary",
       "visible": true,
-      "name": "DOWN",
-      "color": "FFFFFF",
+      "name": "NEXT",
+      "color": "F45C51",
       "bounds": [
         850,
         128,
@@ -472,15 +472,15 @@
       ],
       "values": [
         {
+          "id": "value",
           "message": {
             "type": "cc7",
             "deviceId": 1,
-            "parameterNumber": 81,
+            "parameterNumber": 84,
             "onValue": 127,
             "offValue": 0
           },
-          "defaultValue": "off",
-          "id": "value"
+          "defaultValue": "off"
         }
       ]
     },
@@ -662,10 +662,10 @@
     {
       "id": 18,
       "type": "pad",
-      "mode": "toggle",
-      "visible": false,
-      "name": "PAGE #6",
-      "color": "FFFFFF",
+      "mode": "momentary",
+      "visible": true,
+      "name": "PREVIOUS",
+      "color": "529DEC",
       "bounds": [
         850,
         216,
@@ -685,7 +685,7 @@
           "message": {
             "type": "cc7",
             "deviceId": 1,
-            "parameterNumber": 105,
+            "parameterNumber": 80,
             "onValue": 127,
             "offValue": 0
           },
@@ -699,7 +699,7 @@
       "type": "pad",
       "mode": "toggle",
       "visible": false,
-      "name": "PAGE #7",
+      "name": "PAGE #6",
       "color": "FFFFFF",
       "bounds": [
         0,
@@ -720,7 +720,7 @@
           "message": {
             "type": "cc7",
             "deviceId": 1,
-            "parameterNumber": 106,
+            "parameterNumber": 105,
             "onValue": 127,
             "offValue": 0
           },
@@ -734,7 +734,7 @@
       "type": "pad",
       "mode": "toggle",
       "visible": false,
-      "name": "PAGE #8",
+      "name": "PAGE #7",
       "color": "FFFFFF",
       "bounds": [
         170,
@@ -755,7 +755,7 @@
           "message": {
             "type": "cc7",
             "deviceId": 1,
-            "parameterNumber": 107,
+            "parameterNumber": 106,
             "onValue": 127,
             "offValue": 0
           },
@@ -769,7 +769,7 @@
       "type": "pad",
       "mode": "toggle",
       "visible": false,
-      "name": "PAGE #9",
+      "name": "PAGE #8",
       "color": "FFFFFF",
       "bounds": [
         340,
@@ -790,7 +790,7 @@
           "message": {
             "type": "cc7",
             "deviceId": 1,
-            "parameterNumber": 108,
+            "parameterNumber": 107,
             "onValue": 127,
             "offValue": 0
           },
@@ -804,7 +804,7 @@
       "type": "pad",
       "mode": "toggle",
       "visible": false,
-      "name": "PAGE #10",
+      "name": "PAGE #9",
       "color": "FFFFFF",
       "bounds": [
         510,
@@ -825,7 +825,7 @@
           "message": {
             "type": "cc7",
             "deviceId": 1,
-            "parameterNumber": 109,
+            "parameterNumber": 108,
             "onValue": 127,
             "offValue": 0
           },
@@ -839,7 +839,7 @@
       "type": "pad",
       "mode": "toggle",
       "visible": false,
-      "name": "PAGE #11",
+      "name": "PAGE #10",
       "color": "FFFFFF",
       "bounds": [
         680,
@@ -860,7 +860,7 @@
           "message": {
             "type": "cc7",
             "deviceId": 1,
-            "parameterNumber": 110,
+            "parameterNumber": 109,
             "onValue": 127,
             "offValue": 0
           },
@@ -872,10 +872,10 @@
     {
       "id": 24,
       "type": "pad",
-      "mode": "toggle",
-      "visible": false,
-      "name": "PAGE #12",
-      "color": "FFFFFF",
+      "mode": "momentary",
+      "visible": true,
+      "name": "NEXT",
+      "color": "529DEC",
       "bounds": [
         850,
         304,
@@ -895,7 +895,7 @@
           "message": {
             "type": "cc7",
             "deviceId": 1,
-            "parameterNumber": 111,
+            "parameterNumber": 81,
             "onValue": 127,
             "offValue": 0
           },
@@ -1318,7 +1318,7 @@
       "mode": "momentary",
       "visible": false,
       "name": "",
-      "color": "FFFFFF",
+      "color": "C44795",
       "bounds": [
         0,
         40,
@@ -1484,8 +1484,8 @@
       "type": "pad",
       "mode": "momentary",
       "visible": true,
-      "name": "UP",
-      "color": "FFFFFF",
+      "name": "PREVIOUS",
+      "color": "F45C51",
       "bounds": [
         850,
         40,
@@ -1502,15 +1502,15 @@
       ],
       "values": [
         {
+          "id": "value",
           "message": {
             "type": "cc7",
             "deviceId": 1,
-            "parameterNumber": 80,
+            "parameterNumber": 83,
             "onValue": 127,
             "offValue": 0
           },
-          "defaultValue": "off",
-          "id": "value"
+          "defaultValue": "off"
         }
       ]
     },
@@ -1651,8 +1651,8 @@
       "type": "pad",
       "mode": "momentary",
       "visible": true,
-      "name": "DOWN",
-      "color": "FFFFFF",
+      "name": "NEXT",
+      "color": "F45C51",
       "bounds": [
         850,
         128,
@@ -1669,15 +1669,15 @@
       ],
       "values": [
         {
+          "id": "value",
           "message": {
             "type": "cc7",
             "deviceId": 1,
-            "parameterNumber": 81,
+            "parameterNumber": 84,
             "onValue": 127,
             "offValue": 0
           },
-          "defaultValue": "off",
-          "id": "value"
+          "defaultValue": "off"
         }
       ]
     },
@@ -1859,10 +1859,10 @@
     {
       "id": 54,
       "type": "pad",
-      "mode": "toggle",
-      "visible": false,
-      "name": "PAGE #6",
-      "color": "FFFFFF",
+      "mode": "momentary",
+      "visible": true,
+      "name": "PREVIOUS",
+      "color": "529DEC",
       "bounds": [
         850,
         216,
@@ -1882,7 +1882,7 @@
           "message": {
             "type": "cc7",
             "deviceId": 1,
-            "parameterNumber": 105,
+            "parameterNumber": 80,
             "onValue": 127,
             "offValue": 0
           },
@@ -1896,7 +1896,7 @@
       "type": "pad",
       "mode": "toggle",
       "visible": false,
-      "name": "PAGE #7",
+      "name": "PAGE #6",
       "color": "FFFFFF",
       "bounds": [
         0,
@@ -1917,7 +1917,7 @@
           "message": {
             "type": "cc7",
             "deviceId": 1,
-            "parameterNumber": 106,
+            "parameterNumber": 105,
             "onValue": 127,
             "offValue": 0
           },
@@ -1931,7 +1931,7 @@
       "type": "pad",
       "mode": "toggle",
       "visible": false,
-      "name": "PAGE #8",
+      "name": "PAGE #7",
       "color": "FFFFFF",
       "bounds": [
         170,
@@ -1952,7 +1952,7 @@
           "message": {
             "type": "cc7",
             "deviceId": 1,
-            "parameterNumber": 107,
+            "parameterNumber": 106,
             "onValue": 127,
             "offValue": 0
           },
@@ -1966,7 +1966,7 @@
       "type": "pad",
       "mode": "toggle",
       "visible": false,
-      "name": "PAGE #9",
+      "name": "PAGE #8",
       "color": "FFFFFF",
       "bounds": [
         340,
@@ -1987,7 +1987,7 @@
           "message": {
             "type": "cc7",
             "deviceId": 1,
-            "parameterNumber": 108,
+            "parameterNumber": 107,
             "onValue": 127,
             "offValue": 0
           },
@@ -2001,7 +2001,7 @@
       "type": "pad",
       "mode": "toggle",
       "visible": false,
-      "name": "PAGE #10",
+      "name": "PAGE #9",
       "color": "FFFFFF",
       "bounds": [
         510,
@@ -2022,7 +2022,7 @@
           "message": {
             "type": "cc7",
             "deviceId": 1,
-            "parameterNumber": 109,
+            "parameterNumber": 108,
             "onValue": 127,
             "offValue": 0
           },
@@ -2036,7 +2036,7 @@
       "type": "pad",
       "mode": "toggle",
       "visible": false,
-      "name": "PAGE #11",
+      "name": "PAGE #10",
       "color": "FFFFFF",
       "bounds": [
         680,
@@ -2057,7 +2057,7 @@
           "message": {
             "type": "cc7",
             "deviceId": 1,
-            "parameterNumber": 110,
+            "parameterNumber": 109,
             "onValue": 127,
             "offValue": 0
           },
@@ -2069,10 +2069,10 @@
     {
       "id": 60,
       "type": "pad",
-      "mode": "toggle",
-      "visible": false,
-      "name": "PAGE #12",
-      "color": "FFFFFF",
+      "mode": "momentary",
+      "visible": true,
+      "name": "NEXT",
+      "color": "529DEC",
       "bounds": [
         850,
         304,
@@ -2092,7 +2092,7 @@
           "message": {
             "type": "cc7",
             "deviceId": 1,
-            "parameterNumber": 111,
+            "parameterNumber": 81,
             "onValue": 127,
             "offValue": 0
           },

@@ -46,6 +46,10 @@ Changes to these mapped parameters will be reflected on *Electra One* (and vice 
 
 ## History
 
+### v1.18
+Next & Previous Device (red)
+Next & PreviousPage (blue)
+Toggle Plugin Window (purple)
 ### v1.17
 High Resolution option in Controllers (needs to be enabled for Precision Page)
 ### v1.16

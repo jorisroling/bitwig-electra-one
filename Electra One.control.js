@@ -1,6 +1,6 @@
 loadAPI(10)
 
-const CONTROLLER_SCRIPT_VERSION = '1.17'
+const CONTROLLER_SCRIPT_VERSION = '1.18'
 const CONTROLLER_BASE_NAME = 'Electra One Control'
 const CONTROLLER_SCRIPT_NAME = `${CONTROLLER_BASE_NAME}` //  v${CONTROLLER_SCRIPT_VERSION}
 host.setShouldFailOnDeprecatedUse(true)
@@ -10,7 +10,7 @@ const E1_PRESET_NAME = 'Bitwig Control'
 const E1_PRESET_NAME_ALTERNATIVE = 'Bacara'
 
 
-/* --------------------------------------  v1.17  -- */
+/* --------------------------------------  v1.18  -- */
 host.defineMidiPorts(2, 2)
 
 if (host.platformIsWindows()) {
@@ -46,6 +46,7 @@ const layoutColumns = true
 const E1_MINIMAL_VERSION_TEXT = 'v2.1.2'
 const E1_MINIMAL_VERSION_NUMBER = 212
 
+let cursorDevice = null
 let remoteControlsBank = null
 let cursorTrack = null
 
@@ -68,13 +69,14 @@ const E1_PAGE_CTRL_ID = 13
 
 let fastPage = true
 const remoteControlIDs = [2, 3, 4, 5, 8, 9, 10, 11]
+const pageControlIDs = [13, 14, 15, 16, 17, 19, 20, 21, 22, 23]
 const sendControlIDs = [25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36]
 
 const E1_MAX_LABEL_LENGTH = 14
 const E1_PAGE_CC = 100
-const E1_MAX_PAGE_COUNT = 12
+const E1_MAX_PAGE_COUNT = 10
 const E1_MAX_CONTROL_COUNT = 8
-const E1_PAGE_COUNT = 12
+const E1_PAGE_COUNT = 10
 let pageCount = E1_PAGE_COUNT
 let presetName = E1_PRESET_NAME
 const E1_MAX_SEND_COUNT = 12
@@ -82,6 +84,9 @@ const E1_SEND_CC = 20
 
 const E1_PREVIOUS_PAGE_CC = 80
 const E1_NEXT_PAGE_CC = 81
+const E1_DEVICE_CC = 82
+const E1_PREVIOUS_DEVICE_CC = 83
+const E1_NEXT_DEVICE_CC = 84
 
 for (let a = 0; a < E1_CC_MSB.length; a++) {
   if (E1_CC_MSB[a] < 32) {
@@ -225,12 +230,12 @@ function showPages(value, force) {
     }
     if (force || (remotePageCache[i].name !== json.name || remotePageCache[i].visible !== json.visible)) {
       if (presetActive) {
-        const ctrlId = E1_PAGE_CTRL_ID + controlOffset + i
+        const ctrlId = pageControlIDs[i] + controlOffset
         const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`
         host.getMidiOutPort(1).sendSysex(data)
 
         if (fastPage) {
-          const ctrlId = E1_PAGE_CTRL_ID + controlOffset + controlsPerPage + i
+          const ctrlId = pageControlIDs[i] + controlOffset + controlsPerPage
           const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`
           host.getMidiOutPort(1).sendSysex(data)
         }
@@ -293,7 +298,7 @@ function init() {
     })
   }
 
-  let cursorDevice = cursorTrack.createCursorDevice('E1_CURSOR_DEVICE', 'Cursor Device', 0, CursorDeviceFollowMode.FOLLOW_SELECTION)
+  cursorDevice = cursorTrack.createCursorDevice('E1_CURSOR_DEVICE', 'Cursor Device', 0, CursorDeviceFollowMode.FOLLOW_SELECTION)
 
   remoteControlsBank = cursorDevice.createCursorRemoteControlsPage(8)
 
@@ -389,10 +394,16 @@ function handleMidi(status, data1, data2) {
         let idx = data1 - (E1_SEND_CC + 32)
         sendValues[idx] = (sendValues[idx] & (0x7F << 7)) | (data2 << 0)
         cursorTrack.getSend(idx).set(sendValues[idx], 16384)
+      } else if (data1 == E1_DEVICE_CC && data2) {
+        cursorDevice.isWindowOpen().toggle()
       } else if (data1 == E1_PREVIOUS_PAGE_CC && data2) {
         remoteControlsBank.selectPreviousPage(true)
       } else if (data1 == E1_NEXT_PAGE_CC && data2) {
         remoteControlsBank.selectNextPage(true)
+      } else if (data1 == E1_PREVIOUS_DEVICE_CC && data2) {
+        cursorDevice.selectPrevious()
+      } else if (data1 == E1_NEXT_DEVICE_CC && data2) {
+        cursorDevice.selectNext()
       } else if (data1 >= E1_PAGE_CC && data1 < (E1_PAGE_CC + pageCount)) {
         remoteControlsBank.selectedPageIndex().set(data1 - E1_PAGE_CC)
       }
