@@ -1,6 +1,6 @@
 loadAPI(10)
 
-const CONTROLLER_SCRIPT_VERSION = '1.18'
+const CONTROLLER_SCRIPT_VERSION = '1.19'
 const CONTROLLER_BASE_NAME = 'Electra One Control'
 const CONTROLLER_SCRIPT_NAME = `${CONTROLLER_BASE_NAME}` //  v${CONTROLLER_SCRIPT_VERSION}
 host.setShouldFailOnDeprecatedUse(true)
@@ -10,7 +10,7 @@ const E1_PRESET_NAME = 'Bitwig Control'
 const E1_PRESET_NAME_ALTERNATIVE = 'Bacara'
 
 
-/* --------------------------------------  v1.18  -- */
+/* --------------------------------------  v1.19  -- */
 host.defineMidiPorts(2, 2)
 
 if (host.platformIsWindows()) {
@@ -244,8 +244,11 @@ function showPages(value, force) {
       remotePageCache[i].visible = json.visible
     }
   }
+}
+
+
+function showDeviceName(name) {
   if (presetActive) {
-    const name = (remoteControlNames && value >= 0 && value < remoteControlNames.length) ? remoteControlNames[value] : ''
     const json = {
       name: cleanupLabel(name),
       visible: cleanupLabel(name).length ? true : false
@@ -299,6 +302,12 @@ function init() {
   }
 
   cursorDevice = cursorTrack.createCursorDevice('E1_CURSOR_DEVICE', 'Cursor Device', 0, CursorDeviceFollowMode.FOLLOW_SELECTION)
+
+  cursorDevice.name().addValueObserver(function(name) {
+    if (presetActive) {
+      showDeviceName(name)
+    }
+  })
 
   remoteControlsBank = cursorDevice.createCursorRemoteControlsPage(8)
 

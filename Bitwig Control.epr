@@ -283,7 +283,7 @@
       "type": "pad",
       "mode": "momentary",
       "visible": true,
-      "name": "PREVIOUS",
+      "name": "PREV DEVICE",
       "color": "F45C51",
       "bounds": [
         850,
@@ -454,7 +454,7 @@
       "type": "pad",
       "mode": "momentary",
       "visible": true,
-      "name": "NEXT",
+      "name": "NEXT DEVICE",
       "color": "F45C51",
       "bounds": [
         850,
@@ -664,7 +664,7 @@
       "type": "pad",
       "mode": "momentary",
       "visible": true,
-      "name": "PREVIOUS",
+      "name": "PREV PAGE",
       "color": "529DEC",
       "bounds": [
         850,
@@ -874,7 +874,7 @@
       "type": "pad",
       "mode": "momentary",
       "visible": true,
-      "name": "NEXT",
+      "name": "NEXT PAGE",
       "color": "529DEC",
       "bounds": [
         850,
@@ -1484,7 +1484,7 @@
       "type": "pad",
       "mode": "momentary",
       "visible": true,
-      "name": "PREVIOUS",
+      "name": "PREV DEVICE",
       "color": "F45C51",
       "bounds": [
         850,
@@ -1651,7 +1651,7 @@
       "type": "pad",
       "mode": "momentary",
       "visible": true,
-      "name": "NEXT",
+      "name": "NEXT DEVICE",
       "color": "F45C51",
       "bounds": [
         850,
@@ -1861,7 +1861,7 @@
       "type": "pad",
       "mode": "momentary",
       "visible": true,
-      "name": "PREVIOUS",
+      "name": "PREV PAGE",
       "color": "529DEC",
       "bounds": [
         850,
@@ -2071,7 +2071,7 @@
       "type": "pad",
       "mode": "momentary",
       "visible": true,
-      "name": "NEXT",
+      "name": "NEXT PAGE",
       "color": "529DEC",
       "bounds": [
         850,

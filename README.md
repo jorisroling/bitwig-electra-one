@@ -46,6 +46,8 @@ Changes to these mapped parameters will be reflected on *Electra One* (and vice 
 
 ## History
 
+### v1.19
+Device Name
 ### v1.18
 Next & Previous Device (red)
 Next & PreviousPage (blue)
