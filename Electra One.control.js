@@ -1,6 +1,6 @@
 loadAPI(10)
 
-const CONTROLLER_SCRIPT_VERSION = '1.19'
+const CONTROLLER_SCRIPT_VERSION = '1.20'
 const CONTROLLER_BASE_NAME = 'Electra One Control'
 const CONTROLLER_SCRIPT_NAME = `${CONTROLLER_BASE_NAME}` //  v${CONTROLLER_SCRIPT_VERSION}
 host.setShouldFailOnDeprecatedUse(true)
@@ -10,7 +10,7 @@ const E1_PRESET_NAME = 'Bitwig Control'
 const E1_PRESET_NAME_ALTERNATIVE = 'Bacara'
 
 
-/* --------------------------------------  v1.19  -- */
+/* --------------------------------------  v1.20  -- */
 host.defineMidiPorts(2, 2)
 
 if (host.platformIsWindows()) {
@@ -64,13 +64,13 @@ let E1_CC_LSB = []
 let pageIndex = E1_PAGE_INDEX
 const controlsPerPage = 36
 let controlOffset = ((pageIndex - 1) * controlsPerPage)
-const E1_PAGE_NAME_CTRL_ID = 1
-const E1_PAGE_CTRL_ID = 13
+const E1_DEVICE_NAME_CTRL_ID = 1
+const E1_DEVICE_ACTIVE_CTRL_ID = 7
 
 let fastPage = true
 const remoteControlIDs = [2, 3, 4, 5, 8, 9, 10, 11]
 const pageControlIDs = [13, 14, 15, 16, 17, 19, 20, 21, 22, 23]
-const sendControlIDs = [25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36]
+const sendControlIDs = [25, 26, 27, 28, 29, 31, 32, 33, 34, 35]
 
 const E1_MAX_LABEL_LENGTH = 14
 const E1_PAGE_CC = 100
@@ -79,14 +79,17 @@ const E1_MAX_CONTROL_COUNT = 8
 const E1_PAGE_COUNT = 10
 let pageCount = E1_PAGE_COUNT
 let presetName = E1_PRESET_NAME
-const E1_MAX_SEND_COUNT = 12
+const E1_MAX_SEND_COUNT = 10
 const E1_SEND_CC = 20
 
-const E1_PREVIOUS_PAGE_CC = 80
-const E1_NEXT_PAGE_CC = 81
-const E1_DEVICE_CC = 82
-const E1_PREVIOUS_DEVICE_CC = 83
-const E1_NEXT_DEVICE_CC = 84
+const E1_PREV_PAGE_CC     = 80
+const E1_NEXT_PAGE_CC     = 81
+const E1_DEVICE_NAME_CC   = 82
+const E1_PREV_DEVICE_CC   = 83
+const E1_NEXT_DEVICE_CC   = 84
+const E1_PREV_TRACK_CC    = 85
+const E1_NEXT_TRACK_CC    = 86
+const E1_DEVICE_ACTIVE_CC = 87
 
 for (let a = 0; a < E1_CC_MSB.length; a++) {
   if (E1_CC_MSB[a] < 32) {
@@ -253,12 +256,32 @@ function showDeviceName(name) {
       name: cleanupLabel(name),
       visible: cleanupLabel(name).length ? true : false
     }
-    const ctrlId = E1_PAGE_NAME_CTRL_ID + controlOffset
+    const ctrlId = E1_DEVICE_NAME_CTRL_ID + controlOffset
     const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`
     host.getMidiOutPort(1).sendSysex(data)
 
     if (fastPage) {
-      const ctrlId = E1_PAGE_NAME_CTRL_ID + controlOffset + controlsPerPage
+      const ctrlId = E1_DEVICE_NAME_CTRL_ID + controlOffset + controlsPerPage
+      const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`
+      host.getMidiOutPort(1).sendSysex(data)
+    }
+  }
+}
+
+
+function showDeviceActive(active) {
+  if (presetActive) {
+    const json = {
+      name: cleanupLabel(active ? 'ON' : 'OFF'),
+      visible: true,
+      color: active ? COLOR_MAGENTA : COLOR_WHITE,
+    }
+    const ctrlId = E1_DEVICE_ACTIVE_CTRL_ID + controlOffset
+    const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`
+    host.getMidiOutPort(1).sendSysex(data)
+
+    if (fastPage) {
+      const ctrlId = E1_DEVICE_ACTIVE_CTRL_ID + controlOffset + controlsPerPage
       const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`
       host.getMidiOutPort(1).sendSysex(data)
     }
@@ -306,6 +329,12 @@ function init() {
   cursorDevice.name().addValueObserver(function(name) {
     if (presetActive) {
       showDeviceName(name)
+    }
+  })
+
+  cursorDevice.isEnabled().addValueObserver(function(value) {
+    if (presetActive) {
+      showDeviceActive(value)
     }
   })
 
@@ -403,16 +432,22 @@ function handleMidi(status, data1, data2) {
         let idx = data1 - (E1_SEND_CC + 32)
         sendValues[idx] = (sendValues[idx] & (0x7F << 7)) | (data2 << 0)
         cursorTrack.getSend(idx).set(sendValues[idx], 16384)
-      } else if (data1 == E1_DEVICE_CC && data2) {
+      } else if (data1 == E1_DEVICE_NAME_CC && data2) {
         cursorDevice.isWindowOpen().toggle()
-      } else if (data1 == E1_PREVIOUS_PAGE_CC && data2) {
+      } else if (data1 == E1_DEVICE_ACTIVE_CC && data2) {
+        cursorDevice.isEnabled().toggle()
+      } else if (data1 == E1_PREV_PAGE_CC && data2) {
         remoteControlsBank.selectPreviousPage(true)
       } else if (data1 == E1_NEXT_PAGE_CC && data2) {
         remoteControlsBank.selectNextPage(true)
-      } else if (data1 == E1_PREVIOUS_DEVICE_CC && data2) {
+      } else if (data1 == E1_PREV_DEVICE_CC && data2) {
         cursorDevice.selectPrevious()
       } else if (data1 == E1_NEXT_DEVICE_CC && data2) {
         cursorDevice.selectNext()
+      } else if (data1 == E1_PREV_TRACK_CC && data2) {
+        cursorTrack.selectPrevious()
+      } else if (data1 == E1_NEXT_TRACK_CC && data2) {
+        cursorTrack.selectNext()
       } else if (data1 >= E1_PAGE_CC && data1 < (E1_PAGE_CC + pageCount)) {
         remoteControlsBank.selectedPageIndex().set(data1 - E1_PAGE_CC)
       }
