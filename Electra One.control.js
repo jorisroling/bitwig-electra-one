@@ -1,4 +1,4 @@
-loadAPI(10)
+loadAPI(1)
 
 const CONTROLLER_SCRIPT_VERSION = '1.20'
 const CONTROLLER_BASE_NAME = 'Electra One Control'
@@ -58,8 +58,13 @@ const COLOR_GREEN = '03A598'
 const COLOR_MAGENTA = 'C44795'
 
 
-let E1_CC_MSB = [3, 9, 14, 15, 16, 17, 18, 19]
-let E1_CC_LSB = []
+const E1_CC_MSB = [3, 9, 14, 15, 16, 17, 18, 19]
+let   E1_CC_LSB = []
+for (let a = 0; a < E1_CC_MSB.length; a++) {
+  if (E1_CC_MSB[a] < 32) {
+    E1_CC_LSB.push(E1_CC_MSB[a] + 32)
+  }
+}
 
 let pageIndex = E1_PAGE_INDEX
 const controlsPerPage = 36
@@ -72,6 +77,9 @@ const remoteControlIDs = [2, 3, 4, 5, 8, 9, 10, 11]
 const pageControlIDs = [13, 14, 15, 16, 17, 19, 20, 21, 22, 23]
 const sendControlIDs = [25, 26, 27, 28, 29, 31, 32, 33, 34, 35]
 
+const mixerPage = 3
+const trackLevelControlIDs = [ 7,8,9, 10,11,12, 13,14,15, 16,17,18, 19,20,21, 22,23,24, 25,26,27, 28,29,30, 31,32,33, 34,35,36 ]
+
 const E1_MAX_LABEL_LENGTH = 14
 const E1_PAGE_CC = 100
 const E1_MAX_PAGE_COUNT = 10
@@ -81,6 +89,7 @@ let pageCount = E1_PAGE_COUNT
 let presetName = E1_PRESET_NAME
 const E1_MAX_SEND_COUNT = 10
 const E1_SEND_CC = 20
+const E1_MAX_TRACK_COUNT = 30
 
 const E1_PREV_PAGE_CC     = 80
 const E1_NEXT_PAGE_CC     = 81
@@ -91,11 +100,6 @@ const E1_PREV_TRACK_CC    = 85
 const E1_NEXT_TRACK_CC    = 86
 const E1_DEVICE_ACTIVE_CC = 87
 
-for (let a = 0; a < E1_CC_MSB.length; a++) {
-  if (E1_CC_MSB[a] < 32) {
-    E1_CC_LSB.push(E1_CC_MSB[a] + 32)
-  }
-}
 
 const LAYOUT_COLUMNS_MAP = [0, 4, 1, 5, 2, 6, 3, 7]
 const REVERSE_LAYOUT_COLUMNS_MAP = [0, 2, 4, 6, 1, 3, 5, 7]
@@ -133,6 +137,22 @@ function clearSendCache() {
   }
 }
 clearSendCache()
+
+
+const trackValues = []
+const trackCache = []
+function clearTrackCache() {
+  for (let i = 0; i < E1_MAX_TRACK_COUNT; i++) {
+    if (presetActive) {
+      trackCache[i] = {name:'', visible:true, state:-1}
+      showTrack(i, '')
+    }
+    trackCache[i] = {name:'', visible:false, color:COLOR_YELLOW, state:-1}
+  }
+}
+clearTrackCache()
+
+
 
 function doObject(object, f) {
   return function() {
@@ -249,12 +269,15 @@ function showPages(value, force) {
   }
 }
 
-
+let devicePadVisible = false
 function showDeviceName(name) {
   if (presetActive) {
+    devicePadVisible = (cleanupLabel(name).length ? true : false)
+    //println(`name: ${name}`)
+    if (!cleanupLabel(name).length) showDeviceActive(null)
     const json = {
       name: cleanupLabel(name),
-      visible: cleanupLabel(name).length ? true : false
+      visible: devicePadVisible,
     }
     const ctrlId = E1_DEVICE_NAME_CTRL_ID + controlOffset
     const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`
@@ -271,9 +294,10 @@ function showDeviceName(name) {
 
 function showDeviceActive(active) {
   if (presetActive) {
+    //println(`active: ${active}`)
     const json = {
       name: cleanupLabel(active ? 'ON' : 'OFF'),
-      visible: true,
+      visible: devicePadVisible,
       color: active ? COLOR_MAGENTA : COLOR_WHITE,
     }
     const ctrlId = E1_DEVICE_ACTIVE_CTRL_ID + controlOffset
@@ -285,6 +309,25 @@ function showDeviceActive(active) {
       const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`
       host.getMidiOutPort(1).sendSysex(data)
     }
+  }
+}
+
+function showTrack(index, name, color = COLOR_YELLOW, force = false) {
+  const json = {
+    name: cleanupLabel(name),
+    visible: cleanupLabel(name).length ? true : false,
+    color: color,
+  }
+  //println(JSON.stringify(json))
+  if (index >= 0 && index < trackLevelControlIDs.length && (force || (trackCache[index].name !== json.name || trackCache[index].visible !== json.visible || trackCache[index].color !== json.color))) {
+    if (presetActive) {
+      const ctrlId = trackLevelControlIDs[index] + controlOffset + ( (mixerPage - 1) * controlsPerPage)
+      const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`
+      host.getMidiOutPort(1).sendSysex(data)
+    }
+    trackCache[index].name = json.name
+    trackCache[index].visible = json.visible
+    trackCache[index].color = json.color
   }
 }
 
@@ -303,6 +346,26 @@ function init() {
   host.getMidiInPort(0).setSysexCallback(handleSysExMidi)
   host.getMidiInPort(1).setSysexCallback(handleSysExMidi)
 
+  trackBank = host.createMainTrackBank(E1_MAX_TRACK_COUNT, 0, 0);
+  for(let t=0; t<E1_MAX_TRACK_COUNT; t++) {
+    const track = trackBank.getItemAt(t)
+    track.name().addValueObserver( (name) => {
+      //println("Track " + t + " name: " + name)
+      showTrack(t,name)
+    })
+    track.volume().value().addValueObserver( (volume) => {
+      //println("Track " + t + " volume: " + volume)
+      if (trackValues[t] != (volume * 16383)) {
+        sendMidi(0xB0, 99, 0)
+        sendMidi(0xB0, 98, t + 1)
+
+        sendMidi(0xB0, 6,  ((volume * 16383) >> 7) & 0x7F)
+        sendMidi(0xB0, 38, ((volume * 16383) >> 0) & 0x7F)
+      }
+      trackValues[t] = volume
+    })
+
+  }
 
   cursorTrack = host.createCursorTrack('E1_CURSOR_TRACK', 'Cursor Track', E1_MAX_SEND_COUNT, 0, true)
 
@@ -394,6 +457,9 @@ function reSendAll() {
   for (let s = 0; s < E1_MAX_SEND_COUNT; s++) {
     showSend(s, sendCache[s].name, sendCache[s].color, true)
   }
+  for (let t = 0; t < E1_MAX_TRACK_COUNT; t++) {
+    showTrack(t, trackCache[t].name, trackCache[t].color, true)
+  }
   for (let i = 0; i < E1_MAX_CONTROL_COUNT; i++) {
     const idx = (layoutColumns ? REVERSE_LAYOUT_COLUMNS_MAP[i] : i)
     const value = remoteControlValues[idx]
@@ -409,15 +475,19 @@ function reSendAll() {
   showPages( remoteControlsBank.selectedPageIndex().get(), true)
 }
 
+
+let nrpn_param_msb = -1
+let nrpn_param_lsb = -1
+let nrpn_value_msb = -1
+let nrpn_value_lsb = -1
+
 function handleMidi(status, data1, data2) {
   if (presetActive) {
     if (isChannelController(status)) {
       if (E1_CC_MSB.indexOf(data1) >= 0) {
         let idx = E1_CC_MSB.indexOf(data1)
         remoteControlValues[idx] = (remoteControlValues[idx] & (0x7F << 0)) | (data2 << 7)
-//        if (!highRes) {
-          remoteControlsBank.getParameter(layoutColumns ? LAYOUT_COLUMNS_MAP[idx] : idx).set(remoteControlValues[idx], 16384)
-//        }
+        remoteControlsBank.getParameter(layoutColumns ? LAYOUT_COLUMNS_MAP[idx] : idx).set(remoteControlValues[idx], 16384)
       } else if (highRes && E1_CC_LSB.indexOf(data1) >= 0) {
         let idx = E1_CC_LSB.indexOf(data1)
         remoteControlValues[idx] = (remoteControlValues[idx] & (0x7F << 7)) | (data2 << 0)
@@ -425,9 +495,7 @@ function handleMidi(status, data1, data2) {
       } else if (data1 >= E1_SEND_CC && data1 <= (E1_SEND_CC + E1_MAX_SEND_COUNT)) {
         let idx = data1 - E1_SEND_CC
         sendValues[idx] = (sendValues[idx] & (0x7F << 0)) | (data2 << 7)
-//        if (!highRes) {
-          cursorTrack.getSend(idx).set(sendValues[idx], 16384)
-//        }
+        cursorTrack.getSend(idx).set(sendValues[idx], 16384)
       } else if (highRes && data1 >= (E1_SEND_CC + 32) && data1 < (E1_SEND_CC + E1_MAX_SEND_COUNT + 32) ) {
         let idx = data1 - (E1_SEND_CC + 32)
         sendValues[idx] = (sendValues[idx] & (0x7F << 7)) | (data2 << 0)
@@ -450,6 +518,20 @@ function handleMidi(status, data1, data2) {
         cursorTrack.selectNext()
       } else if (data1 >= E1_PAGE_CC && data1 < (E1_PAGE_CC + pageCount)) {
         remoteControlsBank.selectedPageIndex().set(data1 - E1_PAGE_CC)
+      } else if (data1 == 99) {
+        nrpn_param_msb = data2
+      } else if (data1 == 98) {
+        nrpn_param_lsb = data2
+      } else if (data1 == 6) {
+        nrpn_value_msb = data2
+      } else if (data1 == 38) {
+        nrpn_value_lsb = data2
+        //println(`PM = ${nrpn_param_msb}  PL = ${nrpn_param_lsb}  VM = ${nrpn_value_msb}  VL = ${nrpn_value_lsb}`)
+        if (nrpn_param_msb == 0 && (nrpn_param_lsb >= 1 && nrpn_param_lsb <= E1_MAX_TRACK_COUNT ) ) {
+          let idx = nrpn_param_lsb - 1
+          trackValues[idx] = ( ( nrpn_value_msb << 7 ) | ( nrpn_value_lsb << 0 ) )
+          trackBank.getItemAt(nrpn_param_lsb - 1).volume().set(trackValues[idx], 16384)
+        }
       }
     }
   }
