@@ -1,8 +1,8 @@
-loadAPI(1)
+loadAPI(10)
 
-const CONTROLLER_SCRIPT_VERSION = '1.20'
+const CONTROLLER_SCRIPT_VERSION = '1.21'
 const CONTROLLER_BASE_NAME = 'Electra One Control'
-const CONTROLLER_SCRIPT_NAME = `${CONTROLLER_BASE_NAME}` //  v${CONTROLLER_SCRIPT_VERSION}
+const CONTROLLER_SCRIPT_NAME = `${CONTROLLER_BASE_NAME}`
 host.setShouldFailOnDeprecatedUse(true)
 host.defineController('Bonboa', CONTROLLER_SCRIPT_NAME, CONTROLLER_SCRIPT_VERSION, '7f4b4851-911b-4dbf-a6a7-ee7801296ce1', 'Joris Röling')
 const E1_PAGE_INDEX  = 1
@@ -10,7 +10,7 @@ const E1_PRESET_NAME = 'Bitwig Control'
 const E1_PRESET_NAME_ALTERNATIVE = 'Bacara'
 
 
-/* --------------------------------------  v1.20  -- */
+/* --------------------------------------  v1.21  -- */
 host.defineMidiPorts(2, 2)
 
 if (host.platformIsWindows()) {
@@ -50,11 +50,11 @@ let cursorDevice = null
 let remoteControlsBank = null
 let cursorTrack = null
 
-const COLOR_WHITE = 'FFFFFF'
-const COLOR_RED = 'F45C51'
-const COLOR_YELLOW = 'F49500'
-const COLOR_BLUE = '529DEC'
-const COLOR_GREEN = '03A598'
+const COLOR_WHITE   = 'FFFFFF'
+const COLOR_RED     = 'F45C51'
+const COLOR_YELLOW  = 'F49500'
+const COLOR_BLUE    = '529DEC'
+const COLOR_GREEN   = '03A598'
 const COLOR_MAGENTA = 'C44795'
 
 
@@ -78,10 +78,10 @@ const pageControlIDs = [13, 14, 15, 16, 17, 19, 20, 21, 22, 23]
 const sendControlIDs = [25, 26, 27, 28, 29, 31, 32, 33, 34, 35]
 
 const mixerPage = 3
-const trackLevelControlIDs = [ 7,8,9, 10,11,12, 13,14,15, 16,17,18, 19,20,21, 22,23,24, 25,26,27, 28,29,30, 31,32,33, 34,35,36 ]
+const trackLevelControlIDs = [ 1,2,3, 4,5,6, 7,8,9, 10,11,12, 13,14,15, 16,17,18, 19,20,21, 22,23,24, 25,26,27, 28,29,30, 31,32,33, 34,35,36 ]
 
 const E1_MAX_LABEL_LENGTH = 14
-const E1_PAGE_CC = 100
+const E1_PAGE_CC = 102
 const E1_MAX_PAGE_COUNT = 10
 const E1_MAX_CONTROL_COUNT = 8
 const E1_PAGE_COUNT = 10
@@ -89,7 +89,8 @@ let pageCount = E1_PAGE_COUNT
 let presetName = E1_PRESET_NAME
 const E1_MAX_SEND_COUNT = 10
 const E1_SEND_CC = 20
-const E1_MAX_TRACK_COUNT = 30
+const E1_MAX_TRACK_COUNT = 36
+const E1_TRACK_NRP_PARAM_MSB = 100
 
 const E1_PREV_PAGE_CC     = 80
 const E1_NEXT_PAGE_CC     = 81
@@ -144,10 +145,10 @@ const trackCache = []
 function clearTrackCache() {
   for (let i = 0; i < E1_MAX_TRACK_COUNT; i++) {
     if (presetActive) {
-      trackCache[i] = {name:'', visible:true, state:-1}
-      showTrack(i, '')
+      trackCache[i] = {name:'', type:'', visible:true, state:-1}
+      showTrack(i, '','')
     }
-    trackCache[i] = {name:'', visible:false, color:COLOR_YELLOW, state:-1}
+    trackCache[i] = {name:'', type:'', visible:false, color:COLOR_YELLOW, state:-1}
   }
 }
 clearTrackCache()
@@ -273,7 +274,6 @@ let devicePadVisible = false
 function showDeviceName(name) {
   if (presetActive) {
     devicePadVisible = (cleanupLabel(name).length ? true : false)
-    //println(`name: ${name}`)
     if (!cleanupLabel(name).length) showDeviceActive(null)
     const json = {
       name: cleanupLabel(name),
@@ -294,7 +294,6 @@ function showDeviceName(name) {
 
 function showDeviceActive(active) {
   if (presetActive) {
-    //println(`active: ${active}`)
     const json = {
       name: cleanupLabel(active ? 'ON' : 'OFF'),
       visible: devicePadVisible,
@@ -312,20 +311,20 @@ function showDeviceActive(active) {
   }
 }
 
-function showTrack(index, name, color = COLOR_YELLOW, force = false) {
+function showTrack(index, name, type, color = COLOR_YELLOW, force = false) {
   const json = {
     name: cleanupLabel(name),
-    visible: cleanupLabel(name).length ? true : false,
-    color: color,
+    visible: cleanupLabel(name).length && cleanupLabel(type).length ? true : false,
+    color: type == 'Master' || type == 'Effect' ? COLOR_MAGENTA : (type == 'Group' ? COLOR_RED : (type == 'Disabled' ? COLOR_WHITE : color)),
   }
-  //println(JSON.stringify(json))
-  if (index >= 0 && index < trackLevelControlIDs.length && (force || (trackCache[index].name !== json.name || trackCache[index].visible !== json.visible || trackCache[index].color !== json.color))) {
+  if (index >= 0 && index < trackLevelControlIDs.length && (force || (trackCache[index].name !== json.name || trackCache[index].type !== type || trackCache[index].visible !== json.visible || trackCache[index].color !== json.color))) {
     if (presetActive) {
       const ctrlId = trackLevelControlIDs[index] + controlOffset + ( (mixerPage - 1) * controlsPerPage)
       const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`
       host.getMidiOutPort(1).sendSysex(data)
     }
     trackCache[index].name = json.name
+    trackCache[index].type = type
     trackCache[index].visible = json.visible
     trackCache[index].color = json.color
   }
@@ -346,17 +345,25 @@ function init() {
   host.getMidiInPort(0).setSysexCallback(handleSysExMidi)
   host.getMidiInPort(1).setSysexCallback(handleSysExMidi)
 
-  trackBank = host.createMainTrackBank(E1_MAX_TRACK_COUNT, 0, 0);
+  trackBank = host.createTrackBank(E1_MAX_TRACK_COUNT, 0, 0);
   for(let t=0; t<E1_MAX_TRACK_COUNT; t++) {
     const track = trackBank.getItemAt(t)
-    track.name().addValueObserver( (name) => {
-      //println("Track " + t + " name: " + name)
-      showTrack(t,name)
+
+    track.isActivated().addValueObserver( (value) => {
+      showTrack(t,trackCache[t].name,value ? track.trackType().get() : 'Disabled')
     })
+
+    track.trackType().addValueObserver( (type) => {
+      showTrack(t,trackCache[t].name,track.isActivated().get() ? type : 'Disabled')
+    })
+
+    track.name().addValueObserver( (name) => {
+      showTrack(t,name,trackCache[t].type)
+    })
+
     track.volume().value().addValueObserver( (volume) => {
-      //println("Track " + t + " volume: " + volume)
-      if (trackValues[t] != (volume * 16383)) {
-        sendMidi(0xB0, 99, 0)
+      if (trackValues[t] != (volume /* * 16383 */)) {
+        sendMidi(0xB0, 99, E1_TRACK_NRP_PARAM_MSB)
         sendMidi(0xB0, 98, t + 1)
 
         sendMidi(0xB0, 6,  ((volume * 16383) >> 7) & 0x7F)
@@ -458,7 +465,7 @@ function reSendAll() {
     showSend(s, sendCache[s].name, sendCache[s].color, true)
   }
   for (let t = 0; t < E1_MAX_TRACK_COUNT; t++) {
-    showTrack(t, trackCache[t].name, trackCache[t].color, true)
+    showTrack(t, trackCache[t].name, trackCache[t].type, trackCache[t].color, true)
   }
   for (let i = 0; i < E1_MAX_CONTROL_COUNT; i++) {
     const idx = (layoutColumns ? REVERSE_LAYOUT_COLUMNS_MAP[i] : i)
@@ -526,12 +533,15 @@ function handleMidi(status, data1, data2) {
         nrpn_value_msb = data2
       } else if (data1 == 38) {
         nrpn_value_lsb = data2
-        //println(`PM = ${nrpn_param_msb}  PL = ${nrpn_param_lsb}  VM = ${nrpn_value_msb}  VL = ${nrpn_value_lsb}`)
-        if (nrpn_param_msb == 0 && (nrpn_param_lsb >= 1 && nrpn_param_lsb <= E1_MAX_TRACK_COUNT ) ) {
-          let idx = nrpn_param_lsb - 1
+        if (nrpn_param_msb == E1_TRACK_NRP_PARAM_MSB && (nrpn_param_lsb >= 1 && nrpn_param_lsb <= E1_MAX_TRACK_COUNT ) && nrpn_value_msb > -1 && nrpn_value_msb > -1 ) {
+          let idx = ( nrpn_param_lsb - 1 )
           trackValues[idx] = ( ( nrpn_value_msb << 7 ) | ( nrpn_value_lsb << 0 ) )
-          trackBank.getItemAt(nrpn_param_lsb - 1).volume().set(trackValues[idx], 16384)
+          trackBank.getItemAt(idx).volume().set(trackValues[idx], 16384)
         }
+        nrpn_param_msb = -1
+        nrpn_param_lsb = -1
+        nrpn_value_msb = -1
+        nrpn_value_lsb = -1
       }
     }
   }
@@ -634,7 +644,3 @@ function exit() {
   println(`${CONTROLLER_SCRIPT_NAME} v${CONTROLLER_SCRIPT_VERSION} exited!`)
 }
 
-
-//  clearRemoteControlCache()
-//  clearRemotePageCache()
-//  clearSendCache()

@@ -46,6 +46,8 @@ Changes to these mapped parameters will be reflected on *Electra One* (and vice 
 
 ## History
 
+### v1.21
+- Mixer Page, high res (14-bit) faders
 ### v1.20
 - Next & Previous Track (green)
 - Toggle Device On/Off (purple)
