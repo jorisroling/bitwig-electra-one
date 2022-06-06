@@ -399,6 +399,7 @@ function init() {
   cursorDevice.name().addValueObserver(function(name) {
     if (presetActive) {
       showDeviceName(name)
+      showDeviceActive(cursorDevice.isEnabled().get())
     }
   })
 
