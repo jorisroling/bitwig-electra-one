@@ -1,4 +1,4 @@
-# Bitwig Control for Electra One
+# Bitwig Control for Electra One ([v1.21](#history))
 
 This **Control Script** for *Bitwig* allows **Remote Control Pages** to be controlled by *Electra One*. It has the following features:
 
@@ -44,48 +44,68 @@ Changes to these mapped parameters will be reflected on *Electra One* (and vice 
 
 ![images/electra_one.jpg](https://github.com/jorisroling/bitwig-electra-one/raw/main/images/preset.png)
 
+![images/electra_one.jpg](https://github.com/jorisroling/bitwig-electra-one/raw/main/images/mixer.png)
+
 ## History
 
 ### v1.21
 - Mixer Page, high res (14-bit) faders
+
 ### v1.20
 - Next & Previous Track (green)
 - Toggle Device On/Off (purple)
+
 ### v1.19
 - Device Name
+
 ### v1.18
 - Next & Previous Device (red)
 - Next & PreviousPage (blue)
 - Toggle Plugin Window (purple)
+
 ### v1.17
 - High Resolution option in Controllers (needs to be enabled for Precision Page)
+
 ### v1.16
 - Precise (14-bit) and Fast (7 bit) pages (te last one being new)
+
 ### v1.15
 - Version check fixed for v2.2 (without .0 suffix)
+
 ### v1.14
 - Can't remember
+
 ### v1.13
 - Fixes & Preset Modes (support for Bacara Sequencer)
+
 ### v1.12
 - Supports Electra One firmware v2.1.2 feature (Preset Request)
+
 ### v1.11
 - Some better caching of control state, so after starting, or changing Electra One presets, it should better reflect actual state.
+
 ### v1.10
 - The Bitwig Control is now one page containing the combined Device & Track controls
+
 ### v1.09
 - Some more features on Send: now it shows Pre-fader (blue) or Post-fader (yellow) indicator
 - Combined Device & Track page called "Combined" (for now)
+
 ### v1.08
 - Initial work on a second page called **Track**, wich should allows acces to all track related things, like sends.
+
 ### v1.06
 - Some better settings handling. Default MIDI portnames for Windows added (thanks to *Kirkwood West*).
+
 ### v1.05
 - Fixes bug in fetching the number of Quick Access buttons from settings
+
 ### v1.04
 - Quick Access to Pages (the number of which can be set in the settings)
+
 ### v1.03
 - Added protection agains using the **Control Script** together with any preset other than "**Bitwig Control**". Without the protection, this **Control Script** would set arbitrary labels in the other preset. This mechanism depends on this naming now, so make sure you call your custom preset as sprecified in the settings (defaults to "**Bitwig Control**").
+
 ### v1.00
 - Initial release
 

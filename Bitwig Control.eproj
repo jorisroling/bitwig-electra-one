@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
-  "id": "7LlitScHF6zA0vgLSJWr",
+  "id": "NcPW7S2w6ze5dDWPgCK1",
   "name": "Bitwig Control",
-  "description": "**HEADS-UP** THIS PRESETS NEEDS A CONTROL SCRIPT IN BITWIG. Please visit this [Github Repo](https://github.com/jorisroling/bitwig-electra-one) for the Bitwig Control Script mentioned below\n\n\n# Bitwig Control for Electra One\n\nThis **Control Script** for *Bitwig* allows **Remote Control Pages** to be controlled by *Electra One*. It has the following features:\n\n- Operates as any *Bitwig* **Remote Control Script**, it follows the current device & track (any), and maps 8 device controls (per page), so that *Electra One* reflects the current parameter values, and allow to control them seamlessly bi-directional (without value jumps). This is also true for 12 track sends, and the color reflects the Pre or Post setting of that send.\n- It reflects the current parameter names (assignments) as control labels on *Electra One*.\n- It uses high-res (14-bit) MIDI so that even meticulous parameters changes will transmitted and received. This thanks to *Electra One*'s a very balanced tuning of control handling. Due to this one can do (i.e. with a 'Feedback' parameter on a 0.0 % to 100.0 % scale) little steps like 63.1%, 63.2%, 63.3%, 63.4%. While on a standard low-res (7-bit) MIDI setup this would result in value jumps like 62.5%, 63.3%, 64.1%, 64.8% (very sad I think 😐).\n\n## Installation\n\nTo use this setup, copy the **Electra One.control.js** file to **~/Documents/Bitwig Studio/Controller Scripts** (on Mac, please inform me of the Windows/Linux paths of you know). Make sure the **Bitwig Control** preset is loaded in your *Electra One*. Now add the Control Script in Bitwig by going to **Preferences** -> **Settings** -> **Controllers** -> **Add Controller**, and choose **Bonboa** -> **Electra One Control**. It should be setup correctly by default, but the ports should be like this:\n\n#### for Mac\n- (in) **Electra Controller Electra Port 1**\n- (in) **Electra Controller Electra CTRL**\n- (out) **Electra Controller Electra Port 1**\n- (out) **Electra Controller Electra CTRL**\n\n#### for Windows\n- (in) **Electra Controller**\n- (in) **MIDIIN3 (Electra Controller)**\n- (out) **Electra Controller**\n- (out) **MIDIOUT3 (Electra Controller)**\n\n(This should be default on Mac and Windows, I don't know the port naming on Linux, if anyone knows, please give me a hint, and I will implement the correct naming)\n\n![images/settings.jpg](https://github.com/jorisroling/bitwig-electra-one/raw/main/images/settings.png)\n\nThat's it, it should work now. Go to any Bitwig track and add/select a device. Open its **Remote Parameter Panel**.\n\n![images/remote_panel.png](https://github.com/jorisroling/bitwig-electra-one/raw/main/images/remote_panel.png)\n\nShould show this\n\n![images/images/remote_open.png](https://github.com/jorisroling/bitwig-electra-one/raw/main/images/remote_open.png)\n\n\nChanges to these mapped parameters will be reflected on *Electra One* (and vice versa 😃)\n\n- If you change **Remote Controls Page** the labels & values will change.\n- If you select another device on the same track the labels & values will change.\n- If you select another track the labels & values will change.\n- It follows your focus so to say. Works out nice.\n\n![images/electra_one.jpg](https://github.com/jorisroling/bitwig-electra-one/raw/main/images/preset.png)\n\n## History\n\n### v1.20\n- Next & Previous Track (green)\n- Toggle Device On/Off (purple)\n### v1.19\n- Device Name\n### v1.18\n- Next & Previous Device (red)\n- Next & PreviousPage (blue)\n- Toggle Plugin Window (purple)\n### v1.17\n- High Resolution option in Controllers (needs to be enabled for Precision Page)\n### v1.16\n- Precise (14-bit) and Fast (7 bit) pages (te last one being new)\n### v1.15\n- Version check fixed for v2.2 (without .0 suffix)\n### v1.14\n- Can't remember\n### v1.13\n- Fixes & Preset Modes (support for Bacara Sequencer)\n### v1.12\n- Supports Electra One firmware v2.1.2 feature (Preset Request)\n### v1.11\n- Some better caching of control state, so after starting, or changing Electra One presets, it should better reflect actual state.\n### v1.10\n- The Bitwig Control is now one page containing the combined Device & Track controls\n### v1.09\n- Some more features on Send: now it shows Pre-fader (blue) or Post-fader (yellow) indicator\n- Combined Device & Track page called \"Combined\" (for now)\n### v1.08\n- Initial work on a second page called **Track**, wich should allows acces to all track related things, like sends.\n### v1.06\n- Some better settings handling. Default MIDI portnames for Windows added (thanks to *Kirkwood West*).\n### v1.05\n- Fixes bug in fetching the number of Quick Access buttons from settings\n### v1.04\n- Quick Access to Pages (the number of which can be set in the settings)\n### v1.03\n- Added protection agains using the **Control Script** together with any preset other than \"**Bitwig Control**\". Without the protection, this **Control Script** would set arbitrary labels in the other preset. This mechanism depends on this naming now, so make sure you call your custom preset as sprecified in the settings (defaults to \"**Bitwig Control**\").\n### v1.00\n- Initial release\n\n",
+  "description": "**HEADS-UP** THIS PRESETS NEEDS A CONTROL SCRIPT IN BITWIG. Please visit this [Github Repo](https://github.com/jorisroling/bitwig-electra-one) for the Bitwig Control Script mentioned below\n\n\n# Bitwig Control for Electra One\n\nThis **Control Script** for *Bitwig* allows **Remote Control Pages** to be controlled by *Electra One*. It has the following features:\n\n- Operates as any *Bitwig* **Remote Control Script**, it follows the current device & track (any), and maps 8 device controls (per page), so that *Electra One* reflects the current parameter values, and allow to control them seamlessly bi-directional (without value jumps). This is also true for 12 track sends, and the color reflects the Pre or Post setting of that send.\n- It reflects the current parameter names (assignments) as control labels on *Electra One*.\n- It uses high-res (14-bit) MIDI so that even meticulous parameters changes will transmitted and received. This thanks to *Electra One*'s a very balanced tuning of control handling. Due to this one can do (i.e. with a 'Feedback' parameter on a 0.0 % to 100.0 % scale) little steps like 63.1%, 63.2%, 63.3%, 63.4%. While on a standard low-res (7-bit) MIDI setup this would result in value jumps like 62.5%, 63.3%, 64.1%, 64.8% (very sad I think 😐).\n\n## Installation\n\nTo use this setup, copy the **Electra One.control.js** file to **~/Documents/Bitwig Studio/Controller Scripts** (on Mac, please inform me of the Windows/Linux paths of you know). Make sure the **Bitwig Control** preset is loaded in your *Electra One*. Now add the Control Script in Bitwig by going to **Preferences** -> **Settings** -> **Controllers** -> **Add Controller**, and choose **Bonboa** -> **Electra One Control**. It should be setup correctly by default, but the ports should be like this:\n\n#### for Mac\n- (in) **Electra Controller Electra Port 1**\n- (in) **Electra Controller Electra CTRL**\n- (out) **Electra Controller Electra Port 1**\n- (out) **Electra Controller Electra CTRL**\n\n#### for Windows\n- (in) **Electra Controller**\n- (in) **MIDIIN3 (Electra Controller)**\n- (out) **Electra Controller**\n- (out) **MIDIOUT3 (Electra Controller)**\n\n(This should be default on Mac and Windows, I don't know the port naming on Linux, if anyone knows, please give me a hint, and I will implement the correct naming)\n\n![images/settings.jpg](https://github.com/jorisroling/bitwig-electra-one/raw/main/images/settings.png)\n\nThat's it, it should work now. Go to any Bitwig track and add/select a device. Open its **Remote Parameter Panel**.\n\n![images/remote_panel.png](https://github.com/jorisroling/bitwig-electra-one/raw/main/images/remote_panel.png)\n\nShould show this\n\n![images/images/remote_open.png](https://github.com/jorisroling/bitwig-electra-one/raw/main/images/remote_open.png)\n\n\nChanges to these mapped parameters will be reflected on *Electra One* (and vice versa 😃)\n\n- If you change **Remote Controls Page** the labels & values will change.\n- If you select another device on the same track the labels & values will change.\n- If you select another track the labels & values will change.\n- It follows your focus so to say. Works out nice.\n\n![images/electra_one.jpg](https://github.com/jorisroling/bitwig-electra-one/raw/main/images/preset.png)\n\n## History\n\n### v1.21\n- Mixer Page, high res (14-bit) faders\n### v1.20\n- Next & Previous Track (green)\n- Toggle Device On/Off (purple)\n### v1.19\n- Device Name\n### v1.18\n- Next & Previous Device (red)\n- Next & PreviousPage (blue)\n- Toggle Plugin Window (purple)\n### v1.17\n- High Resolution option in Controllers (needs to be enabled for Precision Page)\n### v1.16\n- Precise (14-bit) and Fast (7 bit) pages (te last one being new)\n### v1.15\n- Version check fixed for v2.2 (without .0 suffix)\n### v1.14\n- Can't remember\n### v1.13\n- Fixes & Preset Modes (support for Bacara Sequencer)\n### v1.12\n- Supports Electra One firmware v2.1.2 feature (Preset Request)\n### v1.11\n- Some better caching of control state, so after starting, or changing Electra One presets, it should better reflect actual state.\n### v1.10\n- The Bitwig Control is now one page containing the combined Device & Track controls\n### v1.09\n- Some more features on Send: now it shows Pre-fader (blue) or Post-fader (yellow) indicator\n- Combined Device & Track page called \"Combined\" (for now)\n### v1.08\n- Initial work on a second page called **Track**, wich should allows acces to all track related things, like sends.\n### v1.06\n- Some better settings handling. Default MIDI portnames for Windows added (thanks to *Kirkwood West*).\n### v1.05\n- Fixes bug in fetching the number of Quick Access buttons from settings\n### v1.04\n- Quick Access to Pages (the number of which can be set in the settings)\n### v1.03\n- Added protection agains using the **Control Script** together with any preset other than \"**Bitwig Control**\". Without the protection, this **Control Script** would set arbitrary labels in the other preset. This mechanism depends on this naming now, so make sure you call your custom preset as sprecified in the settings (defaults to \"**Bitwig Control**\").\n### v1.00\n- Initial release\n\n",
   "lua": "print (\"Bitwig Control Lua ext initialized: patch.requestAll\")\n\npatch.requestAll ()\n",
   "devices": [
     {
@@ -28,7 +28,13 @@
       "slotId": 0,
       "type": "label",
       "name": "Device",
-      "color": "C44795"
+      "color": "C44795",
+      "values": [
+        {
+          "message": {
+          }
+        }
+      ]
     },
     {
       "id": "e0d1e14b-8b43-4933-a1b6-16df3d968775",
@@ -339,7 +345,7 @@
           "message": {
             "type": "cc7",
             "deviceId": 1,
-            "parameterNumber": 100,
+            "parameterNumber": 102,
             "onValue": 127,
             "offValue": 0
           },
@@ -351,98 +357,14 @@
     },
     {
       "id": "16b516b6-7e0c-4189-aa71-44bcce113509",
-      "type": "pad",
-      "mode": "toggle",
-      "visible": false,
-      "name": "PAGE #2",
-      "color": "FFFFFF",
-      "bounds": [
-        170,
-        216,
-        146,
-        56
-      ],
-      "controlSetId": 2,
-      "inputs": [
-        {
-          "potId": 2,
-          "valueId": "value"
-        }
-      ],
-      "values": [
-        {
-          "message": {
-            "type": "cc7",
-            "deviceId": 1,
-            "parameterNumber": 101,
-            "onValue": 127,
-            "offValue": 0
-          },
-          "defaultValue": "off",
-          "id": "value"
-        }
-      ],
       "slotId": 31,
-      "deviceId": 1
-    },
-    {
-      "id": "6eef3bd8-ffb1-4c8f-8148-da7381a6e57e",
       "type": "pad",
-      "mode": "toggle",
-      "visible": false,
-      "name": "PAGE #3",
+      "deviceId": 1,
       "color": "FFFFFF",
-      "bounds": [
-        340,
-        216,
-        146,
-        56
-      ],
-      "controlSetId": 2,
-      "inputs": [
-        {
-          "potId": 3,
-          "valueId": "value"
-        }
-      ],
+      "name": "PAGE #2",
       "values": [
         {
-          "message": {
-            "type": "cc7",
-            "deviceId": 1,
-            "parameterNumber": 102,
-            "onValue": 127,
-            "offValue": 0
-          },
-          "defaultValue": "off",
-          "id": "value"
-        }
-      ],
-      "slotId": 32,
-      "deviceId": 1
-    },
-    {
-      "id": "2e231abc-2390-483b-b905-14679a902c67",
-      "type": "pad",
-      "mode": "toggle",
-      "visible": false,
-      "name": "PAGE #4",
-      "color": "FFFFFF",
-      "bounds": [
-        510,
-        216,
-        146,
-        56
-      ],
-      "controlSetId": 2,
-      "inputs": [
-        {
-          "potId": 4,
-          "valueId": "value"
-        }
-      ],
-      "values": [
-        {
+          "id": "value",
           "message": {
             "type": "cc7",
             "deviceId": 1,
@@ -450,35 +372,22 @@
             "onValue": 127,
             "offValue": 0
           },
-          "defaultValue": "off",
-          "id": "value"
+          "defaultValue": "off"
         }
       ],
-      "slotId": 33,
-      "deviceId": 1
+      "visible": false,
+      "mode": "toggle"
     },
     {
-      "id": "9dfba15b-5637-4d80-b97f-da8ce5000fdc",
+      "id": "6eef3bd8-ffb1-4c8f-8148-da7381a6e57e",
+      "slotId": 32,
       "type": "pad",
-      "mode": "toggle",
-      "visible": false,
-      "name": "PAGE #5",
+      "deviceId": 1,
       "color": "FFFFFF",
-      "bounds": [
-        680,
-        216,
-        146,
-        56
-      ],
-      "controlSetId": 2,
-      "inputs": [
-        {
-          "potId": 5,
-          "valueId": "value"
-        }
-      ],
+      "name": "PAGE #3",
       "values": [
         {
+          "id": "value",
           "message": {
             "type": "cc7",
             "deviceId": 1,
@@ -486,12 +395,57 @@
             "onValue": 127,
             "offValue": 0
           },
-          "defaultValue": "off",
-          "id": "value"
+          "defaultValue": "off"
         }
       ],
+      "visible": false,
+      "mode": "toggle"
+    },
+    {
+      "id": "2e231abc-2390-483b-b905-14679a902c67",
+      "slotId": 33,
+      "type": "pad",
+      "deviceId": 1,
+      "color": "FFFFFF",
+      "name": "PAGE #4",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "cc7",
+            "deviceId": 1,
+            "parameterNumber": 105,
+            "onValue": 127,
+            "offValue": 0
+          },
+          "defaultValue": "off"
+        }
+      ],
+      "visible": false,
+      "mode": "toggle"
+    },
+    {
+      "id": "9dfba15b-5637-4d80-b97f-da8ce5000fdc",
       "slotId": 34,
-      "deviceId": 1
+      "type": "pad",
+      "deviceId": 1,
+      "color": "FFFFFF",
+      "name": "PAGE #5",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "cc7",
+            "deviceId": 1,
+            "parameterNumber": 106,
+            "onValue": 127,
+            "offValue": 0
+          },
+          "defaultValue": "off"
+        }
+      ],
+      "visible": false,
+      "mode": "toggle"
     },
     {
       "id": "2571a18e-c0c2-40af-bf87-c7ebb828b417",
@@ -518,98 +472,14 @@
     },
     {
       "id": "0577cad2-d254-47ea-ac05-dba0ffbf7178",
-      "type": "pad",
-      "mode": "toggle",
-      "visible": false,
-      "name": "PAGE #6",
-      "color": "FFFFFF",
-      "bounds": [
-        850,
-        216,
-        146,
-        56
-      ],
-      "controlSetId": 2,
-      "inputs": [
-        {
-          "potId": 6,
-          "valueId": "value"
-        }
-      ],
-      "values": [
-        {
-          "message": {
-            "type": "cc7",
-            "deviceId": 1,
-            "parameterNumber": 105,
-            "onValue": 127,
-            "offValue": 0
-          },
-          "defaultValue": "off",
-          "id": "value"
-        }
-      ],
       "slotId": 42,
-      "deviceId": 1
-    },
-    {
-      "id": "3ee0ad00-e3ab-4d60-b09c-a4e8810299ac",
       "type": "pad",
-      "mode": "toggle",
-      "visible": false,
-      "name": "PAGE #7",
+      "deviceId": 1,
       "color": "FFFFFF",
-      "bounds": [
-        0,
-        304,
-        146,
-        56
-      ],
-      "controlSetId": 2,
-      "inputs": [
-        {
-          "potId": 7,
-          "valueId": "value"
-        }
-      ],
+      "name": "PAGE #6",
       "values": [
         {
-          "message": {
-            "type": "cc7",
-            "deviceId": 1,
-            "parameterNumber": 106,
-            "onValue": 127,
-            "offValue": 0
-          },
-          "defaultValue": "off",
-          "id": "value"
-        }
-      ],
-      "slotId": 43,
-      "deviceId": 1
-    },
-    {
-      "id": "1780d58d-ef95-4724-82d0-bf7aaf575d03",
-      "type": "pad",
-      "mode": "toggle",
-      "visible": false,
-      "name": "PAGE #8",
-      "color": "FFFFFF",
-      "bounds": [
-        170,
-        304,
-        146,
-        56
-      ],
-      "controlSetId": 2,
-      "inputs": [
-        {
-          "potId": 8,
-          "valueId": "value"
-        }
-      ],
-      "values": [
-        {
+          "id": "value",
           "message": {
             "type": "cc7",
             "deviceId": 1,
@@ -617,35 +487,22 @@
             "onValue": 127,
             "offValue": 0
           },
-          "defaultValue": "off",
-          "id": "value"
+          "defaultValue": "off"
         }
       ],
-      "slotId": 44,
-      "deviceId": 1
+      "visible": false,
+      "mode": "toggle"
     },
     {
-      "id": "9d03b9b5-bb68-4bee-8d87-047c0d165789",
+      "id": "3ee0ad00-e3ab-4d60-b09c-a4e8810299ac",
+      "slotId": 43,
       "type": "pad",
-      "mode": "toggle",
-      "visible": false,
-      "name": "PAGE #9",
+      "deviceId": 1,
       "color": "FFFFFF",
-      "bounds": [
-        340,
-        304,
-        146,
-        56
-      ],
-      "controlSetId": 2,
-      "inputs": [
-        {
-          "potId": 9,
-          "valueId": "value"
-        }
-      ],
+      "name": "PAGE #7",
       "values": [
         {
+          "id": "value",
           "message": {
             "type": "cc7",
             "deviceId": 1,
@@ -653,35 +510,22 @@
             "onValue": 127,
             "offValue": 0
           },
-          "defaultValue": "off",
-          "id": "value"
+          "defaultValue": "off"
         }
       ],
-      "slotId": 45,
-      "deviceId": 1
+      "visible": false,
+      "mode": "toggle"
     },
     {
-      "id": "50d95f7a-dfd3-4b22-9b3b-d052b59ff677",
+      "id": "1780d58d-ef95-4724-82d0-bf7aaf575d03",
+      "slotId": 44,
       "type": "pad",
-      "mode": "toggle",
-      "visible": false,
-      "name": "PAGE #10",
+      "deviceId": 1,
       "color": "FFFFFF",
-      "bounds": [
-        510,
-        304,
-        146,
-        56
-      ],
-      "controlSetId": 2,
-      "inputs": [
-        {
-          "potId": 10,
-          "valueId": "value"
-        }
-      ],
+      "name": "PAGE #8",
       "values": [
         {
+          "id": "value",
           "message": {
             "type": "cc7",
             "deviceId": 1,
@@ -689,12 +533,57 @@
             "onValue": 127,
             "offValue": 0
           },
-          "defaultValue": "off",
-          "id": "value"
+          "defaultValue": "off"
         }
       ],
+      "visible": false,
+      "mode": "toggle"
+    },
+    {
+      "id": "9d03b9b5-bb68-4bee-8d87-047c0d165789",
+      "slotId": 45,
+      "type": "pad",
+      "deviceId": 1,
+      "color": "FFFFFF",
+      "name": "PAGE #9",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "cc7",
+            "deviceId": 1,
+            "parameterNumber": 110,
+            "onValue": 127,
+            "offValue": 0
+          },
+          "defaultValue": "off"
+        }
+      ],
+      "visible": false,
+      "mode": "toggle"
+    },
+    {
+      "id": "50d95f7a-dfd3-4b22-9b3b-d052b59ff677",
       "slotId": 46,
-      "deviceId": 1
+      "type": "pad",
+      "deviceId": 1,
+      "color": "FFFFFF",
+      "name": "PAGE #10",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "cc7",
+            "deviceId": 1,
+            "parameterNumber": 111,
+            "onValue": 127,
+            "offValue": 0
+          },
+          "defaultValue": "off"
+        }
+      ],
+      "visible": false,
+      "mode": "toggle"
     },
     {
       "id": "54515e49-0e36-419a-99bc-e1b90839fa28",
@@ -1004,7 +893,13 @@
       "slotId": 72,
       "type": "label",
       "name": "Device",
-      "color": "C44795"
+      "color": "C44795",
+      "values": [
+        {
+          "message": {
+          }
+        }
+      ]
     },
     {
       "id": "5d68ac54-c63f-402b-932a-7987e05b7a5e",
@@ -1309,7 +1204,7 @@
           "message": {
             "type": "cc7",
             "deviceId": 1,
-            "parameterNumber": 100,
+            "parameterNumber": 102,
             "onValue": 127,
             "offValue": 0
           },
@@ -1321,98 +1216,14 @@
     },
     {
       "id": "30077fb4-6ba6-48c7-90da-b193f6733b0f",
-      "type": "pad",
-      "mode": "toggle",
-      "visible": false,
-      "name": "PAGE #2",
-      "color": "FFFFFF",
-      "bounds": [
-        170,
-        216,
-        146,
-        56
-      ],
-      "controlSetId": 2,
-      "inputs": [
-        {
-          "potId": 2,
-          "valueId": "value"
-        }
-      ],
-      "values": [
-        {
-          "message": {
-            "type": "cc7",
-            "deviceId": 1,
-            "parameterNumber": 101,
-            "onValue": 127,
-            "offValue": 0
-          },
-          "defaultValue": "off",
-          "id": "value"
-        }
-      ],
       "slotId": 103,
-      "deviceId": 1
-    },
-    {
-      "id": "b6607f82-7383-4c3a-a17c-1b90882fd395",
       "type": "pad",
-      "mode": "toggle",
-      "visible": false,
-      "name": "PAGE #3",
+      "deviceId": 1,
       "color": "FFFFFF",
-      "bounds": [
-        340,
-        216,
-        146,
-        56
-      ],
-      "controlSetId": 2,
-      "inputs": [
-        {
-          "potId": 3,
-          "valueId": "value"
-        }
-      ],
+      "name": "PAGE #2",
       "values": [
         {
-          "message": {
-            "type": "cc7",
-            "deviceId": 1,
-            "parameterNumber": 102,
-            "onValue": 127,
-            "offValue": 0
-          },
-          "defaultValue": "off",
-          "id": "value"
-        }
-      ],
-      "slotId": 104,
-      "deviceId": 1
-    },
-    {
-      "id": "e70e3f4d-bf81-4b9f-9bbb-08c47d70e64c",
-      "type": "pad",
-      "mode": "toggle",
-      "visible": false,
-      "name": "PAGE #4",
-      "color": "FFFFFF",
-      "bounds": [
-        510,
-        216,
-        146,
-        56
-      ],
-      "controlSetId": 2,
-      "inputs": [
-        {
-          "potId": 4,
-          "valueId": "value"
-        }
-      ],
-      "values": [
-        {
+          "id": "value",
           "message": {
             "type": "cc7",
             "deviceId": 1,
@@ -1420,35 +1231,22 @@
             "onValue": 127,
             "offValue": 0
           },
-          "defaultValue": "off",
-          "id": "value"
+          "defaultValue": "off"
         }
       ],
-      "slotId": 105,
-      "deviceId": 1
+      "visible": false,
+      "mode": "toggle"
     },
     {
-      "id": "2d18a469-5fae-4d0c-a260-a11c63193b2d",
+      "id": "b6607f82-7383-4c3a-a17c-1b90882fd395",
+      "slotId": 104,
       "type": "pad",
-      "mode": "toggle",
-      "visible": false,
-      "name": "PAGE #5",
+      "deviceId": 1,
       "color": "FFFFFF",
-      "bounds": [
-        680,
-        216,
-        146,
-        56
-      ],
-      "controlSetId": 2,
-      "inputs": [
-        {
-          "potId": 5,
-          "valueId": "value"
-        }
-      ],
+      "name": "PAGE #3",
       "values": [
         {
+          "id": "value",
           "message": {
             "type": "cc7",
             "deviceId": 1,
@@ -1456,12 +1254,57 @@
             "onValue": 127,
             "offValue": 0
           },
-          "defaultValue": "off",
-          "id": "value"
+          "defaultValue": "off"
         }
       ],
+      "visible": false,
+      "mode": "toggle"
+    },
+    {
+      "id": "e70e3f4d-bf81-4b9f-9bbb-08c47d70e64c",
+      "slotId": 105,
+      "type": "pad",
+      "deviceId": 1,
+      "color": "FFFFFF",
+      "name": "PAGE #4",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "cc7",
+            "deviceId": 1,
+            "parameterNumber": 105,
+            "onValue": 127,
+            "offValue": 0
+          },
+          "defaultValue": "off"
+        }
+      ],
+      "visible": false,
+      "mode": "toggle"
+    },
+    {
+      "id": "2d18a469-5fae-4d0c-a260-a11c63193b2d",
       "slotId": 106,
-      "deviceId": 1
+      "type": "pad",
+      "deviceId": 1,
+      "color": "FFFFFF",
+      "name": "PAGE #5",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "cc7",
+            "deviceId": 1,
+            "parameterNumber": 106,
+            "onValue": 127,
+            "offValue": 0
+          },
+          "defaultValue": "off"
+        }
+      ],
+      "visible": false,
+      "mode": "toggle"
     },
     {
       "id": "bc52119b-15c0-4a48-b6e8-3be96cb40daa",
@@ -1488,98 +1331,14 @@
     },
     {
       "id": "90071c7c-7701-45f1-8b64-a93c8c8b5cb6",
-      "type": "pad",
-      "mode": "toggle",
-      "visible": false,
-      "name": "PAGE #6",
-      "color": "FFFFFF",
-      "bounds": [
-        850,
-        216,
-        146,
-        56
-      ],
-      "controlSetId": 2,
-      "inputs": [
-        {
-          "potId": 6,
-          "valueId": "value"
-        }
-      ],
-      "values": [
-        {
-          "message": {
-            "type": "cc7",
-            "deviceId": 1,
-            "parameterNumber": 105,
-            "onValue": 127,
-            "offValue": 0
-          },
-          "defaultValue": "off",
-          "id": "value"
-        }
-      ],
       "slotId": 114,
-      "deviceId": 1
-    },
-    {
-      "id": "8f200751-97bd-4540-89a5-a06679481695",
       "type": "pad",
-      "mode": "toggle",
-      "visible": false,
-      "name": "PAGE #7",
+      "deviceId": 1,
       "color": "FFFFFF",
-      "bounds": [
-        0,
-        304,
-        146,
-        56
-      ],
-      "controlSetId": 2,
-      "inputs": [
-        {
-          "potId": 7,
-          "valueId": "value"
-        }
-      ],
+      "name": "PAGE #6",
       "values": [
         {
-          "message": {
-            "type": "cc7",
-            "deviceId": 1,
-            "parameterNumber": 106,
-            "onValue": 127,
-            "offValue": 0
-          },
-          "defaultValue": "off",
-          "id": "value"
-        }
-      ],
-      "slotId": 115,
-      "deviceId": 1
-    },
-    {
-      "id": "a3db8338-7dc5-4417-bee4-42adc3a73848",
-      "type": "pad",
-      "mode": "toggle",
-      "visible": false,
-      "name": "PAGE #8",
-      "color": "FFFFFF",
-      "bounds": [
-        170,
-        304,
-        146,
-        56
-      ],
-      "controlSetId": 2,
-      "inputs": [
-        {
-          "potId": 8,
-          "valueId": "value"
-        }
-      ],
-      "values": [
-        {
+          "id": "value",
           "message": {
             "type": "cc7",
             "deviceId": 1,
@@ -1587,35 +1346,22 @@
             "onValue": 127,
             "offValue": 0
           },
-          "defaultValue": "off",
-          "id": "value"
+          "defaultValue": "off"
         }
       ],
-      "slotId": 116,
-      "deviceId": 1
+      "visible": false,
+      "mode": "toggle"
     },
     {
-      "id": "dc880ea8-45cc-41e8-b1e1-8303551c9626",
+      "id": "8f200751-97bd-4540-89a5-a06679481695",
+      "slotId": 115,
       "type": "pad",
-      "mode": "toggle",
-      "visible": false,
-      "name": "PAGE #9",
+      "deviceId": 1,
       "color": "FFFFFF",
-      "bounds": [
-        340,
-        304,
-        146,
-        56
-      ],
-      "controlSetId": 2,
-      "inputs": [
-        {
-          "potId": 9,
-          "valueId": "value"
-        }
-      ],
+      "name": "PAGE #7",
       "values": [
         {
+          "id": "value",
           "message": {
             "type": "cc7",
             "deviceId": 1,
@@ -1623,35 +1369,22 @@
             "onValue": 127,
             "offValue": 0
           },
-          "defaultValue": "off",
-          "id": "value"
+          "defaultValue": "off"
         }
       ],
-      "slotId": 117,
-      "deviceId": 1
+      "visible": false,
+      "mode": "toggle"
     },
     {
-      "id": "08dadc76-7a9a-4de5-810d-3dee03534143",
+      "id": "a3db8338-7dc5-4417-bee4-42adc3a73848",
+      "slotId": 116,
       "type": "pad",
-      "mode": "toggle",
-      "visible": false,
-      "name": "PAGE #10",
+      "deviceId": 1,
       "color": "FFFFFF",
-      "bounds": [
-        510,
-        304,
-        146,
-        56
-      ],
-      "controlSetId": 2,
-      "inputs": [
-        {
-          "potId": 10,
-          "valueId": "value"
-        }
-      ],
+      "name": "PAGE #8",
       "values": [
         {
+          "id": "value",
           "message": {
             "type": "cc7",
             "deviceId": 1,
@@ -1659,12 +1392,57 @@
             "onValue": 127,
             "offValue": 0
           },
-          "defaultValue": "off",
-          "id": "value"
+          "defaultValue": "off"
         }
       ],
+      "visible": false,
+      "mode": "toggle"
+    },
+    {
+      "id": "dc880ea8-45cc-41e8-b1e1-8303551c9626",
+      "slotId": 117,
+      "type": "pad",
+      "deviceId": 1,
+      "color": "FFFFFF",
+      "name": "PAGE #9",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "cc7",
+            "deviceId": 1,
+            "parameterNumber": 110,
+            "onValue": 127,
+            "offValue": 0
+          },
+          "defaultValue": "off"
+        }
+      ],
+      "visible": false,
+      "mode": "toggle"
+    },
+    {
+      "id": "08dadc76-7a9a-4de5-810d-3dee03534143",
       "slotId": 118,
-      "deviceId": 1
+      "type": "pad",
+      "deviceId": 1,
+      "color": "FFFFFF",
+      "name": "PAGE #10",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "cc7",
+            "deviceId": 1,
+            "parameterNumber": 111,
+            "onValue": 127,
+            "offValue": 0
+          },
+          "defaultValue": "off"
+        }
+      ],
+      "visible": false,
+      "mode": "toggle"
     },
     {
       "id": "8d429882-e626-45b2-8ca7-1d63c3ca436b",
@@ -1959,6 +1737,812 @@
       ],
       "visible": true,
       "mode": "momentary"
+    },
+    {
+      "id": "87768e84-6f2e-4d8c-a44a-9f83745a732f",
+      "slotId": 144,
+      "type": "label",
+      "span": 6,
+      "name": "Bitwig Mixer",
+      "values": [
+        {
+          "message": {
+          }
+        }
+      ],
+      "color": "F49500"
+    },
+    {
+      "id": "ab7a0976-c3bd-491c-8e19-a3def59e669a",
+      "slotId": 150,
+      "type": "fader",
+      "deviceId": 1,
+      "color": "F49500",
+      "name": "Track #1",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "nrpn",
+            "deviceId": 1,
+            "lsbFirst": false,
+            "parameterNumber": 12801,
+            "min": 0,
+            "max": 16383
+          }
+        }
+      ],
+      "visible": false
+    },
+    {
+      "id": "15f96659-71cb-4d28-a0e6-5b40b142ff4f",
+      "slotId": 151,
+      "type": "fader",
+      "deviceId": 1,
+      "color": "F49500",
+      "name": "Track #2",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "nrpn",
+            "deviceId": 1,
+            "lsbFirst": false,
+            "parameterNumber": 12802,
+            "min": 0,
+            "max": 16383
+          }
+        }
+      ],
+      "visible": false
+    },
+    {
+      "id": "69575ad2-ccbd-4d56-ad46-038ece6f4e01",
+      "slotId": 152,
+      "type": "fader",
+      "deviceId": 1,
+      "color": "F49500",
+      "name": "Track #3",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "nrpn",
+            "deviceId": 1,
+            "lsbFirst": false,
+            "parameterNumber": 12803,
+            "min": 0,
+            "max": 16383
+          }
+        }
+      ],
+      "visible": false
+    },
+    {
+      "id": "769b1015-2a58-40bf-ad01-82fc719ea9ad",
+      "slotId": 153,
+      "type": "fader",
+      "deviceId": 1,
+      "color": "F49500",
+      "name": "Track #4",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "nrpn",
+            "deviceId": 1,
+            "lsbFirst": false,
+            "parameterNumber": 12804,
+            "min": 0,
+            "max": 16383
+          }
+        }
+      ],
+      "visible": false
+    },
+    {
+      "id": "a7106411-9a3a-4f37-9418-3d30049daeac",
+      "slotId": 154,
+      "type": "fader",
+      "deviceId": 1,
+      "color": "F49500",
+      "name": "Track #5",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "nrpn",
+            "deviceId": 1,
+            "lsbFirst": false,
+            "parameterNumber": 12805,
+            "min": 0,
+            "max": 16383
+          }
+        }
+      ],
+      "visible": false
+    },
+    {
+      "id": "302383bd-8736-4593-850b-67594187240f",
+      "slotId": 155,
+      "type": "fader",
+      "deviceId": 1,
+      "color": "F49500",
+      "name": "Track #6",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "nrpn",
+            "deviceId": 1,
+            "lsbFirst": false,
+            "parameterNumber": 12806,
+            "min": 0,
+            "max": 16383
+          }
+        }
+      ],
+      "visible": false
+    },
+    {
+      "id": "df395e18-fbb2-4a2e-aefc-486b3743a31a",
+      "slotId": 162,
+      "type": "fader",
+      "deviceId": 1,
+      "color": "F49500",
+      "name": "Track #7",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "nrpn",
+            "deviceId": 1,
+            "lsbFirst": false,
+            "parameterNumber": 12807,
+            "min": 0,
+            "max": 16383
+          }
+        }
+      ],
+      "visible": false
+    },
+    {
+      "id": "93920c28-e0a5-41e7-9ccc-eec5c802a9af",
+      "slotId": 163,
+      "type": "fader",
+      "deviceId": 1,
+      "color": "F49500",
+      "name": "Track #8",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "nrpn",
+            "deviceId": 1,
+            "lsbFirst": false,
+            "parameterNumber": 12808,
+            "min": 0,
+            "max": 16383
+          }
+        }
+      ],
+      "visible": false
+    },
+    {
+      "id": "1392a6ff-9c06-47a6-b2f5-d211c9189c6f",
+      "slotId": 164,
+      "type": "fader",
+      "deviceId": 1,
+      "color": "F49500",
+      "name": "Track #9",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "nrpn",
+            "deviceId": 1,
+            "lsbFirst": false,
+            "parameterNumber": 12809,
+            "min": 0,
+            "max": 16383
+          }
+        }
+      ],
+      "visible": false
+    },
+    {
+      "id": "48562017-816b-41fb-be1d-0ca03f8cb359",
+      "slotId": 165,
+      "type": "fader",
+      "deviceId": 1,
+      "color": "F49500",
+      "name": "Track #10",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "nrpn",
+            "deviceId": 1,
+            "lsbFirst": false,
+            "parameterNumber": 12810,
+            "min": 0,
+            "max": 16383
+          }
+        }
+      ],
+      "visible": false
+    },
+    {
+      "id": "bf7e6780-a11b-495e-b196-4f7545de39a1",
+      "slotId": 166,
+      "type": "fader",
+      "deviceId": 1,
+      "color": "F49500",
+      "name": "Track #11",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "nrpn",
+            "deviceId": 1,
+            "lsbFirst": false,
+            "parameterNumber": 12811,
+            "min": 0,
+            "max": 16383
+          }
+        }
+      ],
+      "visible": false
+    },
+    {
+      "id": "6549281a-7ce3-46e4-8457-257175b17084",
+      "slotId": 167,
+      "type": "fader",
+      "deviceId": 1,
+      "color": "F49500",
+      "name": "Track #12",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "nrpn",
+            "deviceId": 1,
+            "lsbFirst": false,
+            "parameterNumber": 12812,
+            "min": 0,
+            "max": 16383
+          }
+        }
+      ],
+      "visible": false
+    },
+    {
+      "id": "7261122b-e927-4246-ae0a-555cc8db51db",
+      "slotId": 174,
+      "type": "fader",
+      "deviceId": 1,
+      "color": "F49500",
+      "name": "Track #13",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "nrpn",
+            "deviceId": 1,
+            "lsbFirst": false,
+            "parameterNumber": 12813,
+            "min": 0,
+            "max": 16383
+          }
+        }
+      ],
+      "visible": false
+    },
+    {
+      "id": "91e79b8b-1fc7-4643-bdcd-1f2c4bc344e3",
+      "slotId": 175,
+      "type": "fader",
+      "deviceId": 1,
+      "color": "F49500",
+      "name": "Track #14",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "nrpn",
+            "deviceId": 1,
+            "lsbFirst": false,
+            "parameterNumber": 12814,
+            "min": 0,
+            "max": 16383
+          }
+        }
+      ],
+      "visible": false
+    },
+    {
+      "id": "1f352ef8-a4f7-408c-86d3-f9343b166e66",
+      "slotId": 176,
+      "type": "fader",
+      "deviceId": 1,
+      "color": "F49500",
+      "name": "Track #15",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "nrpn",
+            "deviceId": 1,
+            "lsbFirst": false,
+            "parameterNumber": 12815,
+            "min": 0,
+            "max": 16383
+          }
+        }
+      ],
+      "visible": false
+    },
+    {
+      "id": "eefdf9ce-263d-43fc-bbb6-311a27cdb9e3",
+      "slotId": 177,
+      "type": "fader",
+      "deviceId": 1,
+      "color": "F49500",
+      "name": "Track #16",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "nrpn",
+            "deviceId": 1,
+            "lsbFirst": false,
+            "parameterNumber": 12816,
+            "min": 0,
+            "max": 16383
+          }
+        }
+      ],
+      "visible": false
+    },
+    {
+      "id": "59ba470d-1d71-4bdc-83ba-ea9455079f37",
+      "slotId": 178,
+      "type": "fader",
+      "deviceId": 1,
+      "color": "F49500",
+      "name": "Track #17",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "nrpn",
+            "deviceId": 1,
+            "lsbFirst": false,
+            "parameterNumber": 12817,
+            "min": 0,
+            "max": 16383
+          }
+        }
+      ],
+      "visible": false
+    },
+    {
+      "id": "23320d07-55a1-4741-b112-cc9338e44ea3",
+      "slotId": 179,
+      "type": "fader",
+      "deviceId": 1,
+      "color": "F49500",
+      "name": "Track #18",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "nrpn",
+            "deviceId": 1,
+            "lsbFirst": false,
+            "parameterNumber": 12818,
+            "min": 0,
+            "max": 16383
+          }
+        }
+      ],
+      "visible": false
+    },
+    {
+      "id": "e6a06ce7-86f9-4275-89d3-c9829aad41d5",
+      "slotId": 186,
+      "type": "fader",
+      "deviceId": 1,
+      "color": "F49500",
+      "name": "Track #19",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "nrpn",
+            "deviceId": 1,
+            "lsbFirst": false,
+            "parameterNumber": 12819,
+            "min": 0,
+            "max": 16383
+          }
+        }
+      ],
+      "visible": false
+    },
+    {
+      "id": "f200e725-b31d-4841-9d30-e1fc355d7590",
+      "slotId": 187,
+      "type": "fader",
+      "deviceId": 1,
+      "color": "F49500",
+      "name": "Track #20",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "nrpn",
+            "deviceId": 1,
+            "lsbFirst": false,
+            "parameterNumber": 12820,
+            "min": 0,
+            "max": 16383
+          }
+        }
+      ],
+      "visible": false
+    },
+    {
+      "id": "c100d351-d501-4b81-a352-979d7e43a832",
+      "slotId": 188,
+      "type": "fader",
+      "deviceId": 1,
+      "color": "F49500",
+      "name": "Track #21",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "nrpn",
+            "deviceId": 1,
+            "lsbFirst": false,
+            "parameterNumber": 12821,
+            "min": 0,
+            "max": 16383
+          }
+        }
+      ],
+      "visible": false
+    },
+    {
+      "id": "b6434cbb-1063-4021-898a-e56e01c1a519",
+      "slotId": 189,
+      "type": "fader",
+      "deviceId": 1,
+      "color": "F49500",
+      "name": "Track #22",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "nrpn",
+            "deviceId": 1,
+            "lsbFirst": false,
+            "parameterNumber": 12822,
+            "min": 0,
+            "max": 16383
+          }
+        }
+      ],
+      "visible": false
+    },
+    {
+      "id": "7eaa6028-2509-40ed-812e-7d5e4fb5663f",
+      "slotId": 190,
+      "type": "fader",
+      "deviceId": 1,
+      "color": "F49500",
+      "name": "Track #23",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "nrpn",
+            "deviceId": 1,
+            "lsbFirst": false,
+            "parameterNumber": 12823,
+            "min": 0,
+            "max": 16383
+          }
+        }
+      ],
+      "visible": false
+    },
+    {
+      "id": "525cd390-092e-4291-97b2-af433538cb1b",
+      "slotId": 191,
+      "type": "fader",
+      "deviceId": 1,
+      "color": "F49500",
+      "name": "Track #24",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "nrpn",
+            "deviceId": 1,
+            "lsbFirst": false,
+            "parameterNumber": 12824,
+            "min": 0,
+            "max": 16383
+          }
+        }
+      ],
+      "visible": false
+    },
+    {
+      "id": "8e031d37-40f5-4be8-bd5a-b88a77978469",
+      "slotId": 198,
+      "type": "fader",
+      "deviceId": 1,
+      "color": "F49500",
+      "name": "Track #25",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "nrpn",
+            "deviceId": 1,
+            "lsbFirst": false,
+            "parameterNumber": 12825,
+            "min": 0,
+            "max": 16383
+          }
+        }
+      ],
+      "visible": false
+    },
+    {
+      "id": "16be7778-79a4-42f8-b912-59727e7dbb52",
+      "slotId": 199,
+      "type": "fader",
+      "deviceId": 1,
+      "color": "F49500",
+      "name": "Track #26",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "nrpn",
+            "deviceId": 1,
+            "lsbFirst": false,
+            "parameterNumber": 12826,
+            "min": 0,
+            "max": 16383
+          }
+        }
+      ],
+      "visible": false
+    },
+    {
+      "id": "53629a7f-7b86-4400-aa2b-2ebf8bec03c8",
+      "slotId": 200,
+      "type": "fader",
+      "deviceId": 1,
+      "color": "F49500",
+      "name": "Track #27",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "nrpn",
+            "deviceId": 1,
+            "lsbFirst": false,
+            "parameterNumber": 12827,
+            "min": 0,
+            "max": 16383
+          }
+        }
+      ],
+      "visible": false
+    },
+    {
+      "id": "f38392b6-3f56-40ee-aed0-1ecf3cc580f2",
+      "slotId": 201,
+      "type": "fader",
+      "deviceId": 1,
+      "color": "F49500",
+      "name": "Track #28",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "nrpn",
+            "deviceId": 1,
+            "lsbFirst": false,
+            "parameterNumber": 12828,
+            "min": 0,
+            "max": 16383
+          }
+        }
+      ],
+      "visible": false
+    },
+    {
+      "id": "c8af832e-7c7d-4f5f-94d8-913f52450cfc",
+      "slotId": 202,
+      "type": "fader",
+      "deviceId": 1,
+      "color": "F49500",
+      "name": "Track #29",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "nrpn",
+            "deviceId": 1,
+            "lsbFirst": false,
+            "parameterNumber": 12829,
+            "min": 0,
+            "max": 16383
+          }
+        }
+      ],
+      "visible": false
+    },
+    {
+      "id": "3a399d52-98a1-47d7-89a0-d775450e068b",
+      "slotId": 203,
+      "type": "fader",
+      "deviceId": 1,
+      "color": "F49500",
+      "name": "Track #30",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "nrpn",
+            "deviceId": 1,
+            "lsbFirst": false,
+            "parameterNumber": 12830,
+            "min": 0,
+            "max": 16383
+          }
+        }
+      ],
+      "visible": false
+    },
+    {
+      "id": "559c8f9f-7b0b-4c70-bebd-5fa473d64ba7",
+      "slotId": 210,
+      "type": "fader",
+      "deviceId": 1,
+      "color": "F49500",
+      "name": "Track #31",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "nrpn",
+            "deviceId": 1,
+            "lsbFirst": false,
+            "parameterNumber": 12831,
+            "min": 0,
+            "max": 16383
+          }
+        }
+      ],
+      "visible": false
+    },
+    {
+      "id": "cd2fe353-c1e0-4669-9e89-2555e2cbbe00",
+      "slotId": 211,
+      "type": "fader",
+      "deviceId": 1,
+      "color": "F49500",
+      "name": "Track #32",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "nrpn",
+            "deviceId": 1,
+            "lsbFirst": false,
+            "parameterNumber": 12832,
+            "min": 0,
+            "max": 16383
+          }
+        }
+      ],
+      "visible": false
+    },
+    {
+      "id": "1a1b9f03-9680-4654-8cc8-b1bca4709545",
+      "slotId": 212,
+      "type": "fader",
+      "deviceId": 1,
+      "color": "F49500",
+      "name": "Track #33",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "nrpn",
+            "deviceId": 1,
+            "lsbFirst": false,
+            "parameterNumber": 12833,
+            "min": 0,
+            "max": 16383
+          }
+        }
+      ],
+      "visible": false
+    },
+    {
+      "id": "900fd39b-57c9-4027-8cf8-176575e84eed",
+      "slotId": 213,
+      "type": "fader",
+      "deviceId": 1,
+      "color": "F49500",
+      "name": "Track #34",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "nrpn",
+            "deviceId": 1,
+            "lsbFirst": false,
+            "parameterNumber": 12834,
+            "min": 0,
+            "max": 16383
+          }
+        }
+      ],
+      "visible": false
+    },
+    {
+      "id": "48d9fe1b-11dc-4608-b66d-6dbe87c1c447",
+      "slotId": 214,
+      "type": "fader",
+      "deviceId": 1,
+      "color": "F49500",
+      "name": "Track #35",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "nrpn",
+            "deviceId": 1,
+            "lsbFirst": false,
+            "parameterNumber": 12835,
+            "min": 0,
+            "max": 16383
+          }
+        }
+      ],
+      "visible": false
+    },
+    {
+      "id": "01688842-64b8-452d-b7e8-a0c1b8c155f9",
+      "slotId": 215,
+      "type": "fader",
+      "deviceId": 1,
+      "color": "F49500",
+      "name": "Track #36",
+      "values": [
+        {
+          "id": "value",
+          "message": {
+            "type": "nrpn",
+            "deviceId": 1,
+            "lsbFirst": false,
+            "parameterNumber": 12836,
+            "min": 0,
+            "max": 16383
+          }
+        }
+      ],
+      "visible": false
     }
   ],
   "pages": [
@@ -1969,6 +2553,10 @@
     {
       "id": 2,
       "name": "Bitwig Fast"
+    },
+    {
+      "id": 3,
+      "name": "Bitwig Mixer"
     }
   ],
   "categories": [
