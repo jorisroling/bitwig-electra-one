@@ -274,7 +274,7 @@ let devicePadVisible = false
 function showDeviceName(name) {
   if (presetActive) {
     devicePadVisible = (cleanupLabel(name).length ? true : false)
-    if (!cleanupLabel(name).length) showDeviceActive(null)
+    if (!devicePadVisible) showDeviceActive(null)
     const json = {
       name: cleanupLabel(name),
       visible: devicePadVisible,
@@ -481,6 +481,10 @@ function reSendAll() {
     showRemoteControl(idx, name, true)
   }
   showPages( remoteControlsBank.selectedPageIndex().get(), true)
+
+  showDeviceName(cursorDevice.name().get())
+  showDeviceActive(cursorDevice.isEnabled().get())
+
 }
 
 
