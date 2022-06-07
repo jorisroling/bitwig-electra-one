@@ -48,6 +48,9 @@ Changes to these mapped parameters will be reflected on *Electra One* (and vice 
 
 ## History
 
+### v1.22
+- Fix initialy invisible device pads
+
 ### v1.21
 - Mixer Page, high res (14-bit) faders
 

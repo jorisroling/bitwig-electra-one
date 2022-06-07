@@ -1,6 +1,6 @@
 loadAPI(10)
 
-const CONTROLLER_SCRIPT_VERSION = '1.21'
+const CONTROLLER_SCRIPT_VERSION = '1.22'
 const CONTROLLER_BASE_NAME = 'Electra One Control'
 const CONTROLLER_SCRIPT_NAME = `${CONTROLLER_BASE_NAME}`
 host.setShouldFailOnDeprecatedUse(true)
@@ -10,7 +10,7 @@ const E1_PRESET_NAME = 'Bitwig Control'
 const E1_PRESET_NAME_ALTERNATIVE = 'Bacara'
 
 
-/* --------------------------------------  v1.21  -- */
+/* --------------------------------------  v1.22  -- */
 host.defineMidiPorts(2, 2)
 
 if (host.platformIsWindows()) {
