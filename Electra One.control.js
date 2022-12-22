@@ -1,6 +1,6 @@
 loadAPI(10)
 
-const CONTROLLER_SCRIPT_VERSION = '1.23'
+const CONTROLLER_SCRIPT_VERSION = '1.26'
 const CONTROLLER_BASE_NAME = 'Electra One Control'
 const CONTROLLER_SCRIPT_NAME = `${CONTROLLER_BASE_NAME}`
 host.setShouldFailOnDeprecatedUse(true)
