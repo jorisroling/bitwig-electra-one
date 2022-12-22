@@ -176,7 +176,7 @@ function num2hex(num) {
 }
 
 function str2hex(str) {
-  println(str)
+  // println(str)
   let arr1 = []
   for (let n = 0, l = str.length; n < l; n++) {
     let hex = padZero(Number(str.charCodeAt(n)).toString(16).toUpperCase())
@@ -219,7 +219,7 @@ function showRemoteControl(index, name, force = false) {
     if (presetActive) {
       const ctrlId = remoteControlIDs[index] + controlOffset
       const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`
-      println(data)
+      // println(data)
       host.getMidiOutPort(1).sendSysex(data)
 
       if (fastPage) {
@@ -314,6 +314,7 @@ function showDeviceActive(active) {
 }
 
 function showTrack(index, name, type, color = COLOR_YELLOW, force = false) {
+  // println('Color '+color)
   const json = {
     name: cleanupLabel(name),
     visible: cleanupLabel(name).length && cleanupLabel(type).length ? true : false,
@@ -361,6 +362,15 @@ function init() {
 
     track.name().addValueObserver( (name) => {
       showTrack(t,name,trackCache[t].type)
+    })
+
+    track.color().addValueObserver( (red,green,blue) => {
+      function toHex(d) {
+          return  ("0"+(Number(d).toString(16))).slice(-2).toUpperCase()
+      }
+      const colorHex = toHex(red*256)+toHex(green*256)+toHex(blue*256)
+      // println('Hex: '+colorHex)
+      showTrack(t,trackCache[t].name,trackCache[t].type,colorHex)
     })
 
     track.volume().value().addValueObserver( (volume) => {
@@ -624,7 +634,7 @@ function handleSysExMidi(data) {
       if (data.substr(8, 4) === '017c') { //f0002145017C####f7 = Preset Response
         const json = sysexToJSON(data.substr(12, data.length - 14))
         if (json) {
-            println('hi: '+ e1_firmware_version)
+            // println('hi: '+ e1_firmware_version)
           if (json.preset) {
             presetActive = json.preset.includes(presetName)
             println(`Control changing ${presetActive ? 'IS' : 'is NOT'} active (the active preset name "${json.preset}" ${presetActive ? 'includes' : 'does NOT include'} the phrase "${presetName}")`)
@@ -632,7 +642,7 @@ function handleSysExMidi(data) {
               reSendAll()
             }
           } else if (e1_firmware_version >= 300) {
-            println('hi: '+ JSON.stringify(json))
+            // println('hi: '+ JSON.stringify(json))
             presetActive = true
             reSendAll()
           }
