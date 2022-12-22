@@ -1,6 +1,6 @@
 loadAPI(10)
 
-const CONTROLLER_SCRIPT_VERSION = '1.22'
+const CONTROLLER_SCRIPT_VERSION = '1.23'
 const CONTROLLER_BASE_NAME = 'Electra One Control'
 const CONTROLLER_SCRIPT_NAME = `${CONTROLLER_BASE_NAME}`
 host.setShouldFailOnDeprecatedUse(true)
@@ -176,6 +176,7 @@ function num2hex(num) {
 }
 
 function str2hex(str) {
+  println(str)
   let arr1 = []
   for (let n = 0, l = str.length; n < l; n++) {
     let hex = padZero(Number(str.charCodeAt(n)).toString(16).toUpperCase())
@@ -218,6 +219,7 @@ function showRemoteControl(index, name, force = false) {
     if (presetActive) {
       const ctrlId = remoteControlIDs[index] + controlOffset
       const data = `F0 00 21 45 14 07 ${num2hex(ctrlId & 0x7F)} ${num2hex(ctrlId >> 7)} ${str2hex(JSON.stringify(json))} F7`
+      println(data)
       host.getMidiOutPort(1).sendSysex(data)
 
       if (fastPage) {
@@ -579,14 +581,19 @@ function handleSysExMidi(data) {
     if (data.substr(8, 4) === '017f') { //f0002145017F####f7 = Response data, Electra information
       const json = sysexToJSON(data.substr(12, data.length - 14))
       if (json && json.versionText) {
+        println(`True version string: ${json.versionText}`)
         if (!json.versionText.match(/^v\d+\.\d+\.\d+$/)) {
           if (json.versionText.match(/^v\d+\.\d+$/)) {
             json.versionText+='.0'
           }
         }
-        e1_firmware_version = parseInt(json.versionText.replace(/[v.]/g, ''))
+        const versionText = json.versionText.replace(/[a-zA-Z.-]/g, '').trim()  // To remove
+        println(`Processed version string: ${versionText}`)
+        e1_firmware_version = parseInt(versionText)
         if (e1_firmware_version && e1_firmware_version < E1_MINIMAL_VERSION_NUMBER) {
-          host.showPopupNotification(`${CONTROLLER_SCRIPT_NAME}: Please upgrade the firmware on your Electra One to at least ${E1_MINIMAL_VERSION_TEXT}`)
+          host.showPopupNotification(`${CONTROLLER_SCRIPT_NAME}: Please upgrade the firmware on your Electra One to at least ${E1_MINIMAL_VERSION_TEXT} (now at ${versionText})`)
+        } else {
+//          host.showPopupNotification(`${CONTROLLER_SCRIPT_NAME}:  minimal ${E1_MINIMAL_VERSION_NUMBER} (now at ${versionText})`)
         }
         deactivateAndRequest()
       }
@@ -616,10 +623,17 @@ function handleSysExMidi(data) {
     if (e1_firmware_version && e1_firmware_version >= E1_MINIMAL_VERSION_NUMBER) {
       if (data.substr(8, 4) === '017c') { //f0002145017C####f7 = Preset Response
         const json = sysexToJSON(data.substr(12, data.length - 14))
-        if (json && json.preset) {
-          presetActive = json.preset.includes(presetName)
-          println(`Control changing ${presetActive ? 'IS' : 'is NOT'} active (the active preset name "${json.preset}" ${presetActive ? 'includes' : 'does NOT include'} the phrase "${presetName}")`)
-          if (presetActive) {
+        if (json) {
+            println('hi: '+ e1_firmware_version)
+          if (json.preset) {
+            presetActive = json.preset.includes(presetName)
+            println(`Control changing ${presetActive ? 'IS' : 'is NOT'} active (the active preset name "${json.preset}" ${presetActive ? 'includes' : 'does NOT include'} the phrase "${presetName}")`)
+            if (presetActive) {
+              reSendAll()
+            }
+          } else if (e1_firmware_version >= 300) {
+            println('hi: '+ JSON.stringify(json))
+            presetActive = true
             reSendAll()
           }
         }

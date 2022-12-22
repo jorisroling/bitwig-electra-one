@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "id": "NcPW7S2w6ze5dDWPgCK1",
   "name": "Bitwig Control",
-  "description": "**HEADS-UP** THIS PRESETS NEEDS A CONTROL SCRIPT IN BITWIG. Please visit this [Github Repo](https://github.com/jorisroling/bitwig-electra-one) for the Bitwig Control Script mentioned below\n\n\n# Bitwig Control for Electra One ([v1.21](#history))\n\nThis **Control Script** for *Bitwig* allows **Remote Control Pages** to be controlled by *Electra One*. It has the following features:\n\n- Operates as any *Bitwig* **Remote Control Script**, it follows the current device & track (any), and maps 8 device controls (per page), so that *Electra One* reflects the current parameter values, and allow to control them seamlessly bi-directional (without value jumps). This is also true for 12 track sends, and the color reflects the Pre or Post setting of that send.\n- It reflects the current parameter names (assignments) as control labels on *Electra One*.\n- It uses high-res (14-bit) MIDI so that even meticulous parameters changes will transmitted and received. This thanks to *Electra One*'s a very balanced tuning of control handling. Due to this one can do (i.e. with a 'Feedback' parameter on a 0.0 % to 100.0 % scale) little steps like 63.1%, 63.2%, 63.3%, 63.4%. While on a standard low-res (7-bit) MIDI setup this would result in value jumps like 62.5%, 63.3%, 64.1%, 64.8% (very sad I think 😐).\n\n## Installation\n\nTo use this setup, copy the **Electra One.control.js** file to **~/Documents/Bitwig Studio/Controller Scripts** (on Mac, please inform me of the Windows/Linux paths of you know). Make sure the **Bitwig Control** preset is loaded in your *Electra One*. Now add the Control Script in Bitwig by going to **Preferences** -> **Settings** -> **Controllers** -> **Add Controller**, and choose **Bonboa** -> **Electra One Control**. It should be setup correctly by default, but the ports should be like this:\n\n#### for Mac\n- (in) **Electra Controller Electra Port 1**\n- (in) **Electra Controller Electra CTRL**\n- (out) **Electra Controller Electra Port 1**\n- (out) **Electra Controller Electra CTRL**\n\n#### for Windows\n- (in) **Electra Controller**\n- (in) **MIDIIN3 (Electra Controller)**\n- (out) **Electra Controller**\n- (out) **MIDIOUT3 (Electra Controller)**\n\n(This should be default on Mac and Windows, I don't know the port naming on Linux, if anyone knows, please give me a hint, and I will implement the correct naming)\n\n![images/settings.jpg](https://github.com/jorisroling/bitwig-electra-one/raw/main/images/settings.png)\n\nThat's it, it should work now. Go to any Bitwig track and add/select a device. Open its **Remote Parameter Panel**.\n\n![images/remote_panel.png](https://github.com/jorisroling/bitwig-electra-one/raw/main/images/remote_panel.png)\n\nShould show this\n\n![images/images/remote_open.png](https://github.com/jorisroling/bitwig-electra-one/raw/main/images/remote_open.png)\n\n\nChanges to these mapped parameters will be reflected on *Electra One* (and vice versa 😃)\n\n- If you change **Remote Controls Page** the labels & values will change.\n- If you select another device on the same track the labels & values will change.\n- If you select another track the labels & values will change.\n- It follows your focus so to say. Works out nice.\n\n![images/electra_one.jpg](https://github.com/jorisroling/bitwig-electra-one/raw/main/images/preset.png)\n\n![images/electra_one.jpg](https://github.com/jorisroling/bitwig-electra-one/raw/main/images/mixer.png)\n\n## History\n\n### v1.21\n- Mixer Page, high res (14-bit) faders\n\n### v1.20\n- Next & Previous Track (green)\n- Toggle Device On/Off (purple)\n\n### v1.19\n- Device Name\n\n### v1.18\n- Next & Previous Device (red)\n- Next & PreviousPage (blue)\n- Toggle Plugin Window (purple)\n\n### v1.17\n- High Resolution option in Controllers (needs to be enabled for Precision Page)\n\n### v1.16\n- Precise (14-bit) and Fast (7 bit) pages (te last one being new)\n\n### v1.15\n- Version check fixed for v2.2 (without .0 suffix)\n\n### v1.14\n- Can't remember\n\n### v1.13\n- Fixes & Preset Modes (support for Bacara Sequencer)\n\n### v1.12\n- Supports Electra One firmware v2.1.2 feature (Preset Request)\n\n### v1.11\n- Some better caching of control state, so after starting, or changing Electra One presets, it should better reflect actual state.\n\n### v1.10\n- The Bitwig Control is now one page containing the combined Device & Track controls\n\n### v1.09\n- Some more features on Send: now it shows Pre-fader (blue) or Post-fader (yellow) indicator\n- Combined Device & Track page called \"Combined\" (for now)\n\n### v1.08\n- Initial work on a second page called **Track**, wich should allows acces to all track related things, like sends.\n\n### v1.06\n- Some better settings handling. Default MIDI portnames for Windows added (thanks to *Kirkwood West*).\n\n### v1.05\n- Fixes bug in fetching the number of Quick Access buttons from settings\n\n### v1.04\n- Quick Access to Pages (the number of which can be set in the settings)\n\n### v1.03\n- Added protection agains using the **Control Script** together with any preset other than \"**Bitwig Control**\". Without the protection, this **Control Script** would set arbitrary labels in the other preset. This mechanism depends on this naming now, so make sure you call your custom preset as sprecified in the settings (defaults to \"**Bitwig Control**\").\n\n### v1.00\n- Initial release\n\n",
+  "description": "**HEADS-UP** THIS PRESETS NEEDS A CONTROL SCRIPT IN BITWIG. Please visit this [Github Repo](https://github.com/jorisroling/bitwig-electra-one) for the Bitwig Control Script mentioned below\n\n\n# Bitwig Control for Electra One ([v1.23](#history))\n\nThis **Control Script** for *Bitwig* allows **Remote Control Pages** to be controlled by *Electra One*. It has the following features:\n\n- Operates as any *Bitwig* **Remote Control Script**, it follows the current device & track (any), and maps 8 device controls (per page), so that *Electra One* reflects the current parameter values, and allow to control them seamlessly bi-directional (without value jumps). This is also true for 12 track sends, and the color reflects the Pre or Post setting of that send.\n- It reflects the current parameter names (assignments) as control labels on *Electra One*.\n- It uses high-res (14-bit) MIDI so that even meticulous parameters changes will transmitted and received. This thanks to *Electra One*'s a very balanced tuning of control handling. Due to this one can do (i.e. with a 'Feedback' parameter on a 0.0 % to 100.0 % scale) little steps like 63.1%, 63.2%, 63.3%, 63.4%. While on a standard low-res (7-bit) MIDI setup this would result in value jumps like 62.5%, 63.3%, 64.1%, 64.8% (very sad I think 😐).\n\n## Installation\n\nTo use this setup, copy the **Electra One.control.js** file to **~/Documents/Bitwig Studio/Controller Scripts** (on Mac, please inform me of the Windows/Linux paths of you know). Make sure the **Bitwig Control** preset is loaded in your *Electra One*. Now add the Control Script in Bitwig by going to **Preferences** -> **Settings** -> **Controllers** -> **Add Controller**, and choose **Bonboa** -> **Electra One Control**. It should be setup correctly by default, but the ports should be like this:\n\n#### for Mac\n- (in) **Electra Controller Electra Port 1**\n- (in) **Electra Controller Electra CTRL**\n- (out) **Electra Controller Electra Port 1**\n- (out) **Electra Controller Electra CTRL**\n\n#### for Windows\n- (in) **Electra Controller**\n- (in) **MIDIIN3 (Electra Controller)**\n- (out) **Electra Controller**\n- (out) **MIDIOUT3 (Electra Controller)**\n\n(This should be default on Mac and Windows, I don't know the port naming on Linux, if anyone knows, please give me a hint, and I will implement the correct naming)\n\n![images/settings.jpg](https://github.com/jorisroling/bitwig-electra-one/raw/main/images/settings.png)\n\nThat's it, it should work now. Go to any Bitwig track and add/select a device. Open its **Remote Parameter Panel**.\n\n![images/remote_panel.png](https://github.com/jorisroling/bitwig-electra-one/raw/main/images/remote_panel.png)\n\nShould show this\n\n![images/images/remote_open.png](https://github.com/jorisroling/bitwig-electra-one/raw/main/images/remote_open.png)\n\n\nChanges to these mapped parameters will be reflected on *Electra One* (and vice versa 😃)\n\n- If you change **Remote Controls Page** the labels & values will change.\n- If you select another device on the same track the labels & values will change.\n- If you select another track the labels & values will change.\n- It follows your focus so to say. Works out nice.\n\n![images/electra_one.jpg](https://github.com/jorisroling/bitwig-electra-one/raw/main/images/preset.png)\n\n![images/electra_one.jpg](https://github.com/jorisroling/bitwig-electra-one/raw/main/images/mixer.png)\n\n## History\n\n### v1.23\n- Fix FW v3.0 detection\n\n### v1.22\n- Fix initialy invisible device pads\n\n### v1.21\n- Mixer Page, high res (14-bit) faders\n\n### v1.20\n- Next & Previous Track (green)\n- Toggle Device On/Off (purple)\n\n### v1.19\n- Device Name\n\n### v1.18\n- Next & Previous Device (red)\n- Next & PreviousPage (blue)\n- Toggle Plugin Window (purple)\n\n### v1.17\n- High Resolution option in Controllers (needs to be enabled for Precision Page)\n\n### v1.16\n- Precise (14-bit) and Fast (7 bit) pages (te last one being new)\n\n### v1.15\n- Version check fixed for v2.2 (without .0 suffix)\n\n### v1.14\n- Can't remember\n\n### v1.13\n- Fixes & Preset Modes (support for Bacara Sequencer)\n\n### v1.12\n- Supports Electra One firmware v2.1.2 feature (Preset Request)\n\n### v1.11\n- Some better caching of control state, so after starting, or changing Electra One presets, it should better reflect actual state.\n\n### v1.10\n- The Bitwig Control is now one page containing the combined Device & Track controls\n\n### v1.09\n- Some more features on Send: now it shows Pre-fader (blue) or Post-fader (yellow) indicator\n- Combined Device & Track page called \"Combined\" (for now)\n\n### v1.08\n- Initial work on a second page called **Track**, wich should allows acces to all track related things, like sends.\n\n### v1.06\n- Some better settings handling. Default MIDI portnames for Windows added (thanks to *Kirkwood West*).\n\n### v1.05\n- Fixes bug in fetching the number of Quick Access buttons from settings\n\n### v1.04\n- Quick Access to Pages (the number of which can be set in the settings)\n\n### v1.03\n- Added protection agains using the **Control Script** together with any preset other than \"**Bitwig Control**\". Without the protection, this **Control Script** would set arbitrary labels in the other preset. This mechanism depends on this naming now, so make sure you call your custom preset as sprecified in the settings (defaults to \"**Bitwig Control**\").\n\n### v1.00\n- Initial release\n\n",
   "lua": "print (\"Bitwig Control Lua ext initialized: patch.requestAll\")\n\npatch.requestAll ()\n",
   "devices": [
     {
@@ -34,7 +34,8 @@
           "message": {
           }
         }
-      ]
+      ],
+      "reference": 433
     },
     {
       "id": "e0d1e14b-8b43-4933-a1b6-16df3d968775",
@@ -42,13 +43,14 @@
       "slotId": 1,
       "span": 4,
       "name": "Bitwig Device Remote Controls",
-      "color": "F49500",
+      "color": "676767",
       "values": [
         {
           "message": {
           }
         }
-      ]
+      ],
+      "reference": 434
     },
     {
       "id": "e59784e0-8a4e-4b5b-bdfb-4ca83eda5b69",
@@ -71,14 +73,16 @@
         }
       ],
       "visible": false,
-      "mode": "momentary"
+      "mode": "momentary",
+      "reference": 1
     },
     {
       "id": "a0899df9-6a23-4419-a547-589cef1377fd",
+      "reference": 2,
       "slotId": 7,
       "type": "fader",
       "deviceId": 1,
-      "color": "F49500",
+      "color": "FC3F0C",
       "name": "PARAMETER #1",
       "values": [
         {
@@ -93,14 +97,16 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "mode": ""
     },
     {
       "id": "b5fa254a-3187-4cdd-ad93-bb5325e8e635",
+      "reference": 3,
       "slotId": 8,
       "type": "fader",
       "deviceId": 1,
-      "color": "F49500",
+      "color": "FD6E31",
       "name": "PARAMETER #2",
       "values": [
         {
@@ -115,14 +121,16 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "mode": ""
     },
     {
       "id": "e2ad1cc6-a883-4690-8be1-c4b582958e82",
+      "reference": 4,
       "slotId": 9,
       "type": "fader",
       "deviceId": 1,
-      "color": "F49500",
+      "color": "CF8D11",
       "name": "PARAMETER #3",
       "values": [
         {
@@ -137,14 +145,16 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "mode": ""
     },
     {
       "id": "03c718c0-baeb-45aa-9d98-8519e4ef619d",
+      "reference": 5,
       "slotId": 10,
       "type": "fader",
       "deviceId": 1,
-      "color": "F49500",
+      "color": "36B150",
       "name": "PARAMETER #4",
       "values": [
         {
@@ -159,7 +169,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "mode": ""
     },
     {
       "id": "e36a1929-9a07-44ac-a151-7f142cbb4d51",
@@ -182,7 +193,8 @@
         }
       ],
       "visible": true,
-      "mode": "momentary"
+      "mode": "momentary",
+      "reference": 6
     },
     {
       "id": "2ab43058-e618-4437-8d0d-0a939c7fa1bd",
@@ -205,14 +217,16 @@
         }
       ],
       "visible": false,
-      "mode": "momentary"
+      "mode": "momentary",
+      "reference": 7
     },
     {
       "id": "71102164-a9d9-431f-a736-93304caa7326",
+      "reference": 8,
       "slotId": 19,
       "type": "fader",
       "deviceId": 1,
-      "color": "F49500",
+      "color": "90B63C",
       "name": "PARAMETER #5",
       "values": [
         {
@@ -227,14 +241,16 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "mode": ""
     },
     {
       "id": "9abf3bfe-eea0-4ea1-9527-a306090dcd78",
+      "reference": 9,
       "slotId": 20,
       "type": "fader",
       "deviceId": 1,
-      "color": "F49500",
+      "color": "1085D0",
       "name": "PARAMETER #6",
       "values": [
         {
@@ -249,14 +265,16 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "mode": ""
     },
     {
       "id": "9555b8e9-1709-4a1a-b32e-c1e2202182cc",
+      "reference": 10,
       "slotId": 21,
       "type": "fader",
       "deviceId": 1,
-      "color": "F49500",
+      "color": "812DBF",
       "name": "PARAMETER #7",
       "values": [
         {
@@ -271,14 +289,16 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "mode": ""
     },
     {
       "id": "56397138-da05-4d17-a95d-1f6e7e3543ee",
+      "reference": 11,
       "slotId": 22,
       "type": "fader",
       "deviceId": 1,
-      "color": "F49500",
+      "color": "D84D7E",
       "name": "PARAMETER #8",
       "values": [
         {
@@ -293,7 +313,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "mode": ""
     },
     {
       "id": "2c522013-0549-43f4-bb82-b22715ceadd1",
@@ -316,7 +337,8 @@
         }
       ],
       "visible": true,
-      "mode": "momentary"
+      "mode": "momentary",
+      "reference": 12
     },
     {
       "id": "bcff331a-020c-438a-9fc4-8cdee9069fa5",
@@ -330,7 +352,8 @@
           "message": {
           }
         }
-      ]
+      ],
+      "reference": 445
     },
     {
       "id": "76cc2eea-af73-4f09-9cfb-60941c2a24cb",
@@ -353,7 +376,8 @@
         }
       ],
       "visible": false,
-      "mode": "toggle"
+      "mode": "toggle",
+      "reference": 13
     },
     {
       "id": "16b516b6-7e0c-4189-aa71-44bcce113509",
@@ -376,7 +400,8 @@
         }
       ],
       "visible": false,
-      "mode": "toggle"
+      "mode": "toggle",
+      "reference": 14
     },
     {
       "id": "6eef3bd8-ffb1-4c8f-8148-da7381a6e57e",
@@ -399,7 +424,8 @@
         }
       ],
       "visible": false,
-      "mode": "toggle"
+      "mode": "toggle",
+      "reference": 15
     },
     {
       "id": "2e231abc-2390-483b-b905-14679a902c67",
@@ -422,7 +448,8 @@
         }
       ],
       "visible": false,
-      "mode": "toggle"
+      "mode": "toggle",
+      "reference": 16
     },
     {
       "id": "9dfba15b-5637-4d80-b97f-da8ce5000fdc",
@@ -445,7 +472,8 @@
         }
       ],
       "visible": false,
-      "mode": "toggle"
+      "mode": "toggle",
+      "reference": 17
     },
     {
       "id": "2571a18e-c0c2-40af-bf87-c7ebb828b417",
@@ -468,7 +496,8 @@
         }
       ],
       "visible": true,
-      "mode": "momentary"
+      "mode": "momentary",
+      "reference": 18
     },
     {
       "id": "0577cad2-d254-47ea-ac05-dba0ffbf7178",
@@ -491,7 +520,8 @@
         }
       ],
       "visible": false,
-      "mode": "toggle"
+      "mode": "toggle",
+      "reference": 19
     },
     {
       "id": "3ee0ad00-e3ab-4d60-b09c-a4e8810299ac",
@@ -514,7 +544,8 @@
         }
       ],
       "visible": false,
-      "mode": "toggle"
+      "mode": "toggle",
+      "reference": 20
     },
     {
       "id": "1780d58d-ef95-4724-82d0-bf7aaf575d03",
@@ -537,7 +568,8 @@
         }
       ],
       "visible": false,
-      "mode": "toggle"
+      "mode": "toggle",
+      "reference": 21
     },
     {
       "id": "9d03b9b5-bb68-4bee-8d87-047c0d165789",
@@ -560,7 +592,8 @@
         }
       ],
       "visible": false,
-      "mode": "toggle"
+      "mode": "toggle",
+      "reference": 22
     },
     {
       "id": "50d95f7a-dfd3-4b22-9b3b-d052b59ff677",
@@ -583,7 +616,8 @@
         }
       ],
       "visible": false,
-      "mode": "toggle"
+      "mode": "toggle",
+      "reference": 23
     },
     {
       "id": "54515e49-0e36-419a-99bc-e1b90839fa28",
@@ -606,7 +640,8 @@
         }
       ],
       "visible": true,
-      "mode": "momentary"
+      "mode": "momentary",
+      "reference": 24
     },
     {
       "id": "7151ab87-3303-488b-8b9a-3147ba822dba",
@@ -620,7 +655,8 @@
           "message": {
           }
         }
-      ]
+      ],
+      "reference": 457
     },
     {
       "id": "9e62abe7-664c-46c5-bc53-75ce6725a305",
@@ -642,7 +678,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 25
     },
     {
       "id": "be5d711a-1b50-4e0c-94b8-0f4764fb2f56",
@@ -664,7 +701,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 26
     },
     {
       "id": "d90a6b86-2e7b-47e2-bf34-6f804b38d567",
@@ -686,7 +724,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 27
     },
     {
       "id": "4e98b651-f639-4923-9f96-c2b586dd17c5",
@@ -708,7 +747,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 28
     },
     {
       "id": "9cff0bd4-4c91-4599-b8ee-6b0d53f60e0e",
@@ -730,7 +770,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 29
     },
     {
       "id": "1ece0c99-ddd8-4562-b399-6226fb341947",
@@ -753,7 +794,8 @@
         }
       ],
       "visible": true,
-      "mode": "momentary"
+      "mode": "momentary",
+      "reference": 30
     },
     {
       "id": "3bd47d7c-9b54-4781-93e4-42491decf211",
@@ -775,7 +817,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 31
     },
     {
       "id": "12ca1bfc-adf5-49ce-98ea-aaa2b48d3297",
@@ -797,7 +840,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 32
     },
     {
       "id": "20ccf464-3f65-42a9-a0f4-86275e241f64",
@@ -819,7 +863,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 33
     },
     {
       "id": "98929624-e7bc-477f-80cb-ae32c245099e",
@@ -841,7 +886,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 34
     },
     {
       "id": "8a3e8c13-fcff-4d16-8b9c-27625a955890",
@@ -863,7 +909,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 35
     },
     {
       "id": "8c6e065b-fcd5-4c65-bca4-7af4824083ce",
@@ -886,7 +933,8 @@
         }
       ],
       "visible": true,
-      "mode": "momentary"
+      "mode": "momentary",
+      "reference": 36
     },
     {
       "id": "0b4345a4-69a4-4170-a75d-383d90519c14",
@@ -899,7 +947,8 @@
           "message": {
           }
         }
-      ]
+      ],
+      "reference": 469
     },
     {
       "id": "5d68ac54-c63f-402b-932a-7987e05b7a5e",
@@ -914,7 +963,8 @@
             "parameterNumber": 114
           }
         }
-      ]
+      ],
+      "reference": 470
     },
     {
       "id": "ee9cbdff-e642-402b-bb58-f9d032cb3c90",
@@ -937,14 +987,16 @@
         }
       ],
       "visible": false,
-      "mode": "momentary"
+      "mode": "momentary",
+      "reference": 37
     },
     {
       "id": "3cff2a48-a172-49c3-8f30-48c93bc8a56a",
+      "reference": 38,
       "slotId": 79,
       "type": "fader",
       "deviceId": 1,
-      "color": "F49500",
+      "color": "FC3F0C",
       "name": "PARAMETER #1",
       "values": [
         {
@@ -958,14 +1010,16 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "mode": ""
     },
     {
       "id": "d67890c9-894d-41a2-90bf-225ee77a6df4",
+      "reference": 39,
       "slotId": 80,
       "type": "fader",
       "deviceId": 1,
-      "color": "F49500",
+      "color": "FD6E31",
       "name": "PARAMETER #2",
       "values": [
         {
@@ -979,14 +1033,16 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "mode": ""
     },
     {
       "id": "2153e7d1-be82-4981-9465-c2ae75752976",
+      "reference": 40,
       "slotId": 81,
       "type": "fader",
       "deviceId": 1,
-      "color": "F49500",
+      "color": "CF8D11",
       "name": "PARAMETER #3",
       "values": [
         {
@@ -1000,14 +1056,16 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "mode": ""
     },
     {
       "id": "d65c9e00-b6a8-4f63-9c9b-e4caeaeb88da",
+      "reference": 41,
       "slotId": 82,
       "type": "fader",
       "deviceId": 1,
-      "color": "F49500",
+      "color": "36B150",
       "name": "PARAMETER #4",
       "values": [
         {
@@ -1021,7 +1079,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "mode": ""
     },
     {
       "id": "1af7a10b-f843-4d26-9a4b-c96669580887",
@@ -1044,7 +1103,8 @@
         }
       ],
       "visible": true,
-      "mode": "momentary"
+      "mode": "momentary",
+      "reference": 42
     },
     {
       "id": "ec2dd58a-5ea2-4f43-a4a5-3d2a07a1d395",
@@ -1067,14 +1127,16 @@
         }
       ],
       "visible": false,
-      "mode": "momentary"
+      "mode": "momentary",
+      "reference": 43
     },
     {
       "id": "450db26d-5aec-4cf2-9a8d-15ff63691186",
+      "reference": 44,
       "slotId": 91,
       "type": "fader",
       "deviceId": 1,
-      "color": "F49500",
+      "color": "90B63C",
       "name": "PARAMETER #5",
       "values": [
         {
@@ -1088,14 +1150,16 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "mode": ""
     },
     {
       "id": "16fe520e-ee40-4b01-b432-ab8fcf2e36c0",
+      "reference": 45,
       "slotId": 92,
       "type": "fader",
       "deviceId": 1,
-      "color": "F49500",
+      "color": "1085D0",
       "name": "PARAMETER #6",
       "values": [
         {
@@ -1109,14 +1173,16 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "mode": ""
     },
     {
       "id": "28487054-ac96-4cea-ac98-3bbdb7e13c2c",
+      "reference": 46,
       "slotId": 93,
       "type": "fader",
       "deviceId": 1,
-      "color": "F49500",
+      "color": "812DBF",
       "name": "PARAMETER #7",
       "values": [
         {
@@ -1130,14 +1196,16 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "mode": ""
     },
     {
       "id": "b61217a7-10a3-4be5-8c50-bf3a8a122d8d",
+      "reference": 47,
       "slotId": 94,
       "type": "fader",
       "deviceId": 1,
-      "color": "F49500",
+      "color": "D84D7E",
       "name": "PARAMETER #8",
       "values": [
         {
@@ -1151,7 +1219,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "mode": ""
     },
     {
       "id": "fb579c37-0de8-44f0-b030-2daad81a8dda",
@@ -1174,7 +1243,8 @@
         }
       ],
       "visible": true,
-      "mode": "momentary"
+      "mode": "momentary",
+      "reference": 48
     },
     {
       "id": "c3157faa-21c0-4f3a-9956-6b3922e1d6a8",
@@ -1189,7 +1259,8 @@
             "parameterNumber": 112
           }
         }
-      ]
+      ],
+      "reference": 481
     },
     {
       "id": "ceee2e4c-7388-49b3-b2b4-0403f2e28734",
@@ -1212,7 +1283,8 @@
         }
       ],
       "visible": false,
-      "mode": "toggle"
+      "mode": "toggle",
+      "reference": 49
     },
     {
       "id": "30077fb4-6ba6-48c7-90da-b193f6733b0f",
@@ -1235,7 +1307,8 @@
         }
       ],
       "visible": false,
-      "mode": "toggle"
+      "mode": "toggle",
+      "reference": 50
     },
     {
       "id": "b6607f82-7383-4c3a-a17c-1b90882fd395",
@@ -1258,7 +1331,8 @@
         }
       ],
       "visible": false,
-      "mode": "toggle"
+      "mode": "toggle",
+      "reference": 51
     },
     {
       "id": "e70e3f4d-bf81-4b9f-9bbb-08c47d70e64c",
@@ -1281,7 +1355,8 @@
         }
       ],
       "visible": false,
-      "mode": "toggle"
+      "mode": "toggle",
+      "reference": 52
     },
     {
       "id": "2d18a469-5fae-4d0c-a260-a11c63193b2d",
@@ -1304,7 +1379,8 @@
         }
       ],
       "visible": false,
-      "mode": "toggle"
+      "mode": "toggle",
+      "reference": 53
     },
     {
       "id": "bc52119b-15c0-4a48-b6e8-3be96cb40daa",
@@ -1327,7 +1403,8 @@
         }
       ],
       "visible": true,
-      "mode": "momentary"
+      "mode": "momentary",
+      "reference": 54
     },
     {
       "id": "90071c7c-7701-45f1-8b64-a93c8c8b5cb6",
@@ -1350,7 +1427,8 @@
         }
       ],
       "visible": false,
-      "mode": "toggle"
+      "mode": "toggle",
+      "reference": 55
     },
     {
       "id": "8f200751-97bd-4540-89a5-a06679481695",
@@ -1373,7 +1451,8 @@
         }
       ],
       "visible": false,
-      "mode": "toggle"
+      "mode": "toggle",
+      "reference": 56
     },
     {
       "id": "a3db8338-7dc5-4417-bee4-42adc3a73848",
@@ -1396,7 +1475,8 @@
         }
       ],
       "visible": false,
-      "mode": "toggle"
+      "mode": "toggle",
+      "reference": 57
     },
     {
       "id": "dc880ea8-45cc-41e8-b1e1-8303551c9626",
@@ -1419,7 +1499,8 @@
         }
       ],
       "visible": false,
-      "mode": "toggle"
+      "mode": "toggle",
+      "reference": 58
     },
     {
       "id": "08dadc76-7a9a-4de5-810d-3dee03534143",
@@ -1442,7 +1523,8 @@
         }
       ],
       "visible": false,
-      "mode": "toggle"
+      "mode": "toggle",
+      "reference": 59
     },
     {
       "id": "8d429882-e626-45b2-8ca7-1d63c3ca436b",
@@ -1465,7 +1547,8 @@
         }
       ],
       "visible": true,
-      "mode": "momentary"
+      "mode": "momentary",
+      "reference": 60
     },
     {
       "id": "188c06bd-599f-4f9f-a92c-bdc27f422a68",
@@ -1480,7 +1563,8 @@
             "parameterNumber": 113
           }
         }
-      ]
+      ],
+      "reference": 493
     },
     {
       "id": "aaa156c1-8f4e-46a8-936c-1f554aa4e36d",
@@ -1501,7 +1585,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 61
     },
     {
       "id": "2c4e4593-38ba-4c5d-8a4d-a817a93daaec",
@@ -1522,7 +1607,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 62
     },
     {
       "id": "482b7c26-726e-464b-b96a-8c19a306dd57",
@@ -1543,7 +1629,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 63
     },
     {
       "id": "683c8b96-a663-4491-ad45-47c5e2a0ca0b",
@@ -1564,7 +1651,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 64
     },
     {
       "id": "d3a74780-bff7-423c-a010-4811d52e0384",
@@ -1585,7 +1673,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 65
     },
     {
       "id": "6bc036ec-0397-4336-938d-d44e3929a1e4",
@@ -1608,7 +1697,8 @@
         }
       ],
       "visible": true,
-      "mode": "momentary"
+      "mode": "momentary",
+      "reference": 66
     },
     {
       "id": "d7a34860-61d4-4c0f-8d72-f9eb4912eada",
@@ -1629,7 +1719,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 67
     },
     {
       "id": "e40138bf-f247-4974-afc0-809883c399e2",
@@ -1650,7 +1741,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 68
     },
     {
       "id": "7f247948-3b7b-4114-a835-ce6011c1660d",
@@ -1671,7 +1763,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 69
     },
     {
       "id": "ee5ac67a-f249-4378-a290-83b034684a3d",
@@ -1692,7 +1785,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 70
     },
     {
       "id": "0688d12d-7ac9-4c42-a5b6-4b3b28a0e6d8",
@@ -1713,7 +1807,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 71
     },
     {
       "id": "2b391e64-e138-45dd-92a3-499ac87f1610",
@@ -1736,7 +1831,8 @@
         }
       ],
       "visible": true,
-      "mode": "momentary"
+      "mode": "momentary",
+      "reference": 72
     },
     {
       "id": "87768e84-6f2e-4d8c-a44a-9f83745a732f",
@@ -1750,7 +1846,8 @@
           }
         }
       ],
-      "color": "F49500"
+      "color": "F49500",
+      "reference": 505
     },
     {
       "id": "ab7a0976-c3bd-491c-8e19-a3def59e669a",
@@ -1772,7 +1869,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 73
     },
     {
       "id": "15f96659-71cb-4d28-a0e6-5b40b142ff4f",
@@ -1794,7 +1892,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 74
     },
     {
       "id": "69575ad2-ccbd-4d56-ad46-038ece6f4e01",
@@ -1816,7 +1915,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 75
     },
     {
       "id": "769b1015-2a58-40bf-ad01-82fc719ea9ad",
@@ -1838,7 +1938,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 76
     },
     {
       "id": "a7106411-9a3a-4f37-9418-3d30049daeac",
@@ -1860,7 +1961,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 77
     },
     {
       "id": "302383bd-8736-4593-850b-67594187240f",
@@ -1882,7 +1984,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 78
     },
     {
       "id": "df395e18-fbb2-4a2e-aefc-486b3743a31a",
@@ -1904,7 +2007,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 79
     },
     {
       "id": "93920c28-e0a5-41e7-9ccc-eec5c802a9af",
@@ -1926,7 +2030,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 80
     },
     {
       "id": "1392a6ff-9c06-47a6-b2f5-d211c9189c6f",
@@ -1948,7 +2053,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 81
     },
     {
       "id": "48562017-816b-41fb-be1d-0ca03f8cb359",
@@ -1970,7 +2076,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 82
     },
     {
       "id": "bf7e6780-a11b-495e-b196-4f7545de39a1",
@@ -1992,7 +2099,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 83
     },
     {
       "id": "6549281a-7ce3-46e4-8457-257175b17084",
@@ -2014,7 +2122,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 84
     },
     {
       "id": "7261122b-e927-4246-ae0a-555cc8db51db",
@@ -2036,7 +2145,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 85
     },
     {
       "id": "91e79b8b-1fc7-4643-bdcd-1f2c4bc344e3",
@@ -2058,7 +2168,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 86
     },
     {
       "id": "1f352ef8-a4f7-408c-86d3-f9343b166e66",
@@ -2080,7 +2191,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 87
     },
     {
       "id": "eefdf9ce-263d-43fc-bbb6-311a27cdb9e3",
@@ -2102,7 +2214,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 88
     },
     {
       "id": "59ba470d-1d71-4bdc-83ba-ea9455079f37",
@@ -2124,7 +2237,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 89
     },
     {
       "id": "23320d07-55a1-4741-b112-cc9338e44ea3",
@@ -2146,7 +2260,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 90
     },
     {
       "id": "e6a06ce7-86f9-4275-89d3-c9829aad41d5",
@@ -2168,7 +2283,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 91
     },
     {
       "id": "f200e725-b31d-4841-9d30-e1fc355d7590",
@@ -2190,7 +2306,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 92
     },
     {
       "id": "c100d351-d501-4b81-a352-979d7e43a832",
@@ -2212,7 +2329,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 93
     },
     {
       "id": "b6434cbb-1063-4021-898a-e56e01c1a519",
@@ -2234,7 +2352,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 94
     },
     {
       "id": "7eaa6028-2509-40ed-812e-7d5e4fb5663f",
@@ -2256,7 +2375,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 95
     },
     {
       "id": "525cd390-092e-4291-97b2-af433538cb1b",
@@ -2278,7 +2398,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 96
     },
     {
       "id": "8e031d37-40f5-4be8-bd5a-b88a77978469",
@@ -2300,7 +2421,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 97
     },
     {
       "id": "16be7778-79a4-42f8-b912-59727e7dbb52",
@@ -2322,7 +2444,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 98
     },
     {
       "id": "53629a7f-7b86-4400-aa2b-2ebf8bec03c8",
@@ -2344,7 +2467,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 99
     },
     {
       "id": "f38392b6-3f56-40ee-aed0-1ecf3cc580f2",
@@ -2366,7 +2490,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 100
     },
     {
       "id": "c8af832e-7c7d-4f5f-94d8-913f52450cfc",
@@ -2388,7 +2513,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 101
     },
     {
       "id": "3a399d52-98a1-47d7-89a0-d775450e068b",
@@ -2410,7 +2536,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 102
     },
     {
       "id": "559c8f9f-7b0b-4c70-bebd-5fa473d64ba7",
@@ -2432,7 +2559,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 103
     },
     {
       "id": "cd2fe353-c1e0-4669-9e89-2555e2cbbe00",
@@ -2454,7 +2582,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 104
     },
     {
       "id": "1a1b9f03-9680-4654-8cc8-b1bca4709545",
@@ -2476,7 +2605,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 105
     },
     {
       "id": "900fd39b-57c9-4027-8cf8-176575e84eed",
@@ -2498,7 +2628,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 106
     },
     {
       "id": "48d9fe1b-11dc-4608-b66d-6dbe87c1c447",
@@ -2520,7 +2651,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 107
     },
     {
       "id": "01688842-64b8-452d-b7e8-a0c1b8c155f9",
@@ -2542,7 +2674,8 @@
           }
         }
       ],
-      "visible": false
+      "visible": false,
+      "reference": 108
     }
   ],
   "pages": [

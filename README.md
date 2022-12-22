@@ -1,4 +1,4 @@
-# Bitwig Control for Electra One ([v1.21](#history))
+# Bitwig Control for Electra One ([v1.23](#history))
 
 This **Control Script** for *Bitwig* allows **Remote Control Pages** to be controlled by *Electra One*. It has the following features:
 
@@ -47,6 +47,9 @@ Changes to these mapped parameters will be reflected on *Electra One* (and vice 
 ![images/electra_one.jpg](https://github.com/jorisroling/bitwig-electra-one/raw/main/images/mixer.png)
 
 ## History
+
+### v1.23
+- Fix FW v3.0 detection
 
 ### v1.22
 - Fix initialy invisible device pads
