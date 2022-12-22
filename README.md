@@ -1,4 +1,4 @@
-# Bitwig Control for Electra One ([v1.24](#history))
+# Bitwig Control for Electra One ([v1.25](#history))
 
 This **Control Script** for *Bitwig* allows **Remote Control Pages** to be controlled by *Electra One*. It has the following features:
 
@@ -47,6 +47,9 @@ Changes to these mapped parameters will be reflected on *Electra One* (and vice 
 ![images/electra_one.jpg](https://github.com/jorisroling/bitwig-electra-one/raw/main/images/mixer.png)
 
 ## History
+
+### v1.25
+- Fix release version
 
 ### v1.24
 - Bitwigs track colors in Mixer page
